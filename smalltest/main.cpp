@@ -127,8 +127,6 @@ int main(void)
 	START_TIMING_ND;
 	int time_test1 = clock();
 
-	//testcomment
-
 	for (int iter = 0; iter < ITERATIONS; iter++)
 	{
 		#pragma omp parallel 
