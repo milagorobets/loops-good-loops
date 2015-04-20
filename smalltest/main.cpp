@@ -188,9 +188,8 @@ int main(void)
 		#pragma omp parallel 
 		{
 		#pragma omp for schedule(static) nowait	
-		for (int x = 0; x < DIM; x++) // comment numero uno
+		for (int x = 0; x < DIM; x++) 
 		{
-			int a = 11;
 			s_m = &d_matrix[x][0];
 			s_r_m = &d_res_matrix[x][0];
 					
