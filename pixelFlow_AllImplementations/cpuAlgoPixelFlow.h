@@ -15,6 +15,7 @@ namespace CPU_UNOPTIMIZED
 	void cpuAlgoPixelFlow_nextStep(void);
 	void cpuAlgoPixelFlow_updateSource(int t);
 	void cpuAlgoPixelFlow_delete();
+	double get_M0(int x, int y);
 
 	extern int matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
 	extern int entries;

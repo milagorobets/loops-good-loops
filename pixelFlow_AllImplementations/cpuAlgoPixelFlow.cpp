@@ -41,6 +41,13 @@ void cpuAlgoPixelFlow_nextStep(void);
 void cpuAlgoPixelFlow_updateSource(int t);
 void cpuAlgoPixelFlow_delete();
 
+double get_M0(int x, int y);
+
+double get_M0(int x, int y)
+{
+	return CPU_UNOPTIMIZED::m0[x][y];
+}
+
 void cpuAlgoPixelFlow_init(void)
 {
 
@@ -146,10 +153,10 @@ void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], doubl
 		cpuAlgoPixelFlow_nextStep();
 //		printf("Iteration %d complete. \n", t);
 //		// display matrix values:
-//		for (int i = 0; i < MATRIX_DIM; i++)
-//		{
-//			printf("Row %d: %f, %f, %f, %f, %f \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
-//		}
+		for (int i = 0; i < MATRIX_DIM; i++)
+		{
+			printf("Row %d: %f, %f, %f, %f, %f \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
+		}
 	}
 }
 

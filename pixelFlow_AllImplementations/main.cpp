@@ -3,6 +3,7 @@
 #include "cpuAlgoPixelFlow.h"
 #include "cpuAlgoPixelFlow_v.h"
 #include "cpuAlgoPixelFlow_v_1d.h"
+#include "ref_cpuAlgoPixelFlow.h"
 #include <time.h>
 #include <stdio.h>
 #include <cstdlib>
@@ -16,12 +17,9 @@ int position_sourceY = 3;
 
 double frequency_source = 1;
 
-// choose mode
-//namespace CPU_UNOPTIMIZED {}
-// CPU_UNOPTIMIZED: first implementation, uses new/delete to allocate memory
-// CPU_VECTOR: version of CPU_UNOPTIMIZED with new/delete replaced by <vector>
-// CPU_VECTOR_1D: version of CPU_VECTOR but <vector>s are 1D instead of 2D
 using namespace TEST_SPACE;
+//using namespace CPU_UNOPTIMIZED;
+using namespace REFERENCE_SPACE;
 
 double matrixFlow[4][4] = {{1.0,-1.0,1.0,1.0},
         {-1.0,1.0,1.0,1.0},
@@ -36,8 +34,15 @@ double matrixWall[4][4] = {{1.0,-1.0,1.0,1.0},
 #define CPU_START clock_t t1; t1=clock();
 #define CPU_END {long int final=clock()-t1; printf("CPU took %li ticks (%f seconds) \n", final, ((float)final)/CLOCKS_PER_SEC);}
 
+#define DISPLAY_NAMESPACE printf("Running: " STRING(TEST_SPACE) ": \n")
+
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+
 int main(void)
 {
+	DISPLAY_NAMESPACE;
+	
 	matrixFlow_types MATRIX_FLOW_TYPE = BASIC;
 	init_MatrixFlowType(&MATRIX_FLOW_TYPE, matrixFlow);
 
@@ -70,14 +75,53 @@ int main(void)
 	CPU_START;
 
 	TEST_SPACE::cpuAlgoPixelFlow_init();
-	CPU_END;
-	t1=clock();
 	TEST_SPACE::cpuAlgoPixelFlow(NUM_CPU_R, matrixFlow, matrixWall, t_sourceLoc);
-	TEST_SPACE::cpuAlgoPixelFlow_delete();
-
+	
 	CPU_END;
 	printf("MATRIX_DIM %d \n", MATRIX_DIM);
 	printf("%d iterations \n", TEST_SPACE::entries);
+
+	// If user wants to check the output against working code
+#if CHECK_OUTPUT
+	printf("\n Beginning Reference Computations... \n");
+	REFERENCE_SPACE::matrixWallLoc[0][0] = 1;
+	REFERENCE_SPACE::matrixWallLoc[0][1] = 1;
+	REFERENCE_SPACE::matrixWallLoc[0][2] = 1;
+	REFERENCE_SPACE::matrixWallLoc[0][3] = 1;
+	REFERENCE_SPACE::matrixWallLoc[0][4] = 1;
+
+	REFERENCE_SPACE::cpuAlgoPixelFlow_init();
+	REFERENCE_SPACE::cpuAlgoPixelFlow(NUM_CPU_R, matrixFlow, matrixWall, t_sourceLoc);
+	
+	printf("\n Comparing outputs... \n");
+	int wrong = 0;
+	for (int x = 0; x < MATRIX_DIM; x++)
+	{
+		for (int y = 0; y < MATRIX_DIM; y++)
+		{
+			double refM0 = REFERENCE_SPACE::get_M0(x,y);
+			double tM0 = TEST_SPACE::get_M0(x,y);
+			printf("ref: %f \n", refM0);
+			//printf("ref: %f, calc: %f \n", refM0, tM0);
+			//if (REFERENCE_SPACE::get_M0(x,y) != TEST_SPACE::get_M0(x,y)) // need tolerance
+			//{
+			//	wrong++;
+			//}
+		}
+	}
+	if (wrong > 0) 
+	{
+		printf("FAILURE! %d entries did not match.\n", wrong);
+	}
+	else
+	{
+		printf("SUCCESS! All entries matched. \n");
+	}
+	REFERENCE_SPACE::cpuAlgoPixelFlow_delete();
+
+#endif
+
+	TEST_SPACE::cpuAlgoPixelFlow_delete();
 
 	return 0;
 }
