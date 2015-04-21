@@ -124,8 +124,8 @@ void CPU_REFERENCE::cpuAlgoPixelFlow(unsigned int num_iterations, double matrixF
 	//	m2 = matrixTest[2];
 	//	m3 = matrixTest[3];
 
-	src_amplitude = 1;
-	src_frequency = 1;
+	src_amplitude = 1.0;
+	src_frequency = 1.0;
 
 	sourceLoc[0] = in_sourceLoc[0]; sourceLoc[1] = in_sourceLoc[1];
 
@@ -134,7 +134,7 @@ void CPU_REFERENCE::cpuAlgoPixelFlow(unsigned int num_iterations, double matrixF
 		for (int y = 0; y < 4;  y++)
 		{
 			W[x][y] = matrixFlow[x][y] * (coef/2.0);
-			//printf("matrixFlow[%d][%d] = %f \n", x, y, matrixFlow[x][y]);
+			//printf("matrixFlow[%d][%d] = %f, W = %f\n", x, y, matrixFlow[x][y], W[x][y]);
 		}
 	}
 
@@ -146,29 +146,28 @@ void CPU_REFERENCE::cpuAlgoPixelFlow(unsigned int num_iterations, double matrixF
 		}
 	}
 
-
+	source = 0;
 	for (int t = 0; t < num_iterations; t++)
 	{
-
+		/*for (int i = 0; i < MATRIX_DIM; i++)
+		{
+			printf("Row %d: %.9G, %.9G, %.9G, %.9G, %.9G \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
+		}*/
 		cpuAlgoPixelFlow_updateSource(t);
 		cpuAlgoPixelFlow_nextStep();
 //		printf("Iteration %d complete. \n", t);
-//		// display matrix values:
-		/*for (int i = 0; i < MATRIX_DIM; i++)
-		{
-			printf("Row %d: %f, %f, %f, %f, %f \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
-		}*/
+//		// display matrix values:		
 	}
 }
 
 void CPU_REFERENCE::cpuAlgoPixelFlow_updateSource(int t)
 {
-	source = src_amplitude * sin(2 * PI * src_frequency * t * 0.01); //0.01 is from original java code
+	source = src_amplitude * sin(2 * 3.14159 * src_frequency * (double)(t) * 0.01); //0.01 is from original java code
 }
 
 void CPU_REFERENCE::cpuAlgoPixelFlow_nextStep(void)
 {
-	double f0, f1, f2, f3;
+	double f0 = 0, f1 = 0, f2 = 0, f3 = 0;
 	double newF[4];
 	bool isWall;
 	for (int x = 0; x < MATRIX_DIM; x++)
@@ -180,7 +179,7 @@ void CPU_REFERENCE::cpuAlgoPixelFlow_nextStep(void)
 			f1 = m1[x][y];
 			f2 = m2[x][y];
 			f3 = m3[x][y];
-
+			
 			newF[0] = 0;
 			newF[1] = 0;
 			newF[2] = 0;
@@ -196,20 +195,26 @@ void CPU_REFERENCE::cpuAlgoPixelFlow_nextStep(void)
 			}
 
 			// check if pixel is a wall
-			isWall = matrixWallLoc[x][y];
+			isWall = (bool)(matrixWallLoc[x][y]);
 
 			if (isWall)
 			{
 				for (int i = 0; i < WWAL_LENGTH; i++)
 				{
-					newF[i] += WWall[0][i]*f0 + WWall[1][i]*f1+WWall[2][i]*f2+WWall[3][i]*f3;
+					newF[i] = WWall[0][i]*f0 + WWall[1][i]*f1+WWall[2][i]*f2+WWall[3][i]*f3;
 				}
 			}
 			else
 			{
 				for (int i = 0; i < W_LENGTH; i++)
 				{
-					newF[i] += W[0][i]*f0 + W[1][i]*f1 + W[2][i]*f2 + W[3][i]*f3;
+					/*double w0i = W[0][i];
+					double w1i = W[1][i];
+					double w2i = W[2][i];
+					double w3i = W[3][i];
+					double testf = f0*w0i;*/
+					newF[i] = W[0][i]*f0 + W[1][i]*f1 + W[2][i]*f2 + W[3][i]*f3;
+					//newF[i] = w0i*f0 + w1i*f1 + w2i*f2 + w3i*f3;
 				}
 			}
 

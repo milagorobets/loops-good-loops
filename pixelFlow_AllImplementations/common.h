@@ -12,7 +12,7 @@
 
 #define PI 3.141592653589
 
-#define NUM_CPU_R 5
+#define NUM_CPU_R 100
 
 #define MATRIX_DIM 5
 
@@ -25,7 +25,9 @@
 // CPU_OPT_MALLOC: optimized CPU implementation with malloc/free
 // GPU_UNOPTIMIZED: code stupidly thrown at the GPU
 // GPU_DUAL_BUFFER: double-buffer computation and memory transfer for the GPU
-//#define TEST_SPACE CPU_UNOPTIMIZED
+
+#define TEST_CLASS CPU_UNOPTIMIZED 
+#define REFERENCE_CLASS CPU_REFERENCE // Don't change this?
 
 #define CHECK_OUTPUT 1 // Compare output to known working version to make sure it is still correct
 #define CHECK_TOLERANCE 0.000001
