@@ -68,16 +68,26 @@
   <ItemGroup>
     <ClInclude Include="common.h" />
     <ClInclude Include="cpuAlgoPixelFlow.h" />
-    <ClInclude Include="cpuAlgoPixelFlow_v.h" />
-    <ClInclude Include="cpuAlgoPixelFlow_v_1d.h" />
+    <ClInclude Include="cpuAlgoPixelFlow_v.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="cpuAlgoPixelFlow_v_1d.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="init.h" />
     <ClInclude Include="ref_cpuAlgoPixelFlow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpuAlgoPixelFlow.cpp" />
-    <ClCompile Include="cpuAlgoPixelFlow_v.cpp" />
-    <ClCompile Include="cpuAlgoPixelFlow_v_1d.cpp" />
-    <ClCompile Include="gpuAlgoPixelFlow.cpp" />
+    <ClCompile Include="cpuAlgoPixelFlow_v.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="cpuAlgoPixelFlow_v_1d.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="gpuAlgoPixelFlow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="init.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ref_cpuAlgoPixelFlow.cpp" />

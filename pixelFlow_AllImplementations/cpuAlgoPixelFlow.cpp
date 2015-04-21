@@ -1,5 +1,3 @@
-
-
 /*
  * cpuAlgoPixelFlow.cpp
  *
@@ -8,50 +6,43 @@
  */
 #include "common.h"
 #include "cpuAlgoPixelFlow.h"
-//#include <array>
 #include <stdio.h>
 #include <math.h>
+#include <cstdlib>
+#include <stdlib.h>
+#include <cstring>
 
-
-namespace CPU_UNOPTIMIZED
+// default constructor
+CPU_UNOPTIMIZED::CPU_UNOPTIMIZED()
 {
-#define PI 3.141592653589
-
-double f[4];
-double source;
-double sourceLoc[2];
-double src_amplitude, src_frequency;
-int coef = 1;
-int entries = 0;
-
-int WWAL_LENGTH = 4;
-int W_LENGTH = 4;
-
-double ** m0, ** nm0; // try the linear allocation method for timing comparison
-double ** m1, ** nm1;
-double ** m2, ** nm2;
-double ** m3, ** nm3;
-double ** W, ** WWall;
-
-int matrixWallLoc[MATRIX_DIM][MATRIX_DIM] = {0};
-
-void cpuAlgoPixelFlow_init(void);
-void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[]);
-void cpuAlgoPixelFlow_nextStep(void);
-void cpuAlgoPixelFlow_updateSource(int t);
-void cpuAlgoPixelFlow_delete();
-
-double get_M0(int x, int y);
-
-double get_M0(int x, int y)
-{
-	return CPU_UNOPTIMIZED::m0[x][y];
+	cpuAlgoPixelFlow_init();
 }
 
-void cpuAlgoPixelFlow_init(void)
+double CPU_UNOPTIMIZED::get_M0(int x, int y)
 {
+	return m0[x][y];
+}
 
+void CPU_UNOPTIMIZED::setMatrixWallLoc(int x, int y, int val)
+{
+	matrixWallLoc[x][y] = val;
+}
 
+void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(void)
+{
+	// Initialize some values
+	coef = 1;
+	entries = 0;
+	WWAL_LENGTH = 4;
+	W_LENGTH = 4;
+
+	for (int x = 0; x < MATRIX_DIM; x++)
+	{
+		for (int y = 0; y < MATRIX_DIM; y++)
+		{
+			matrixWallLoc[x][y] = 0;
+		}
+	}
 
 	m0 = new double * [MATRIX_DIM];
 	m1 = new double * [MATRIX_DIM];
@@ -69,22 +60,32 @@ void cpuAlgoPixelFlow_init(void)
 	for (int i = 0; i < MATRIX_DIM; ++i)
 	{
 		m0[i] = new double [MATRIX_DIM];
+		memset(m0[i], 0, MATRIX_DIM*(sizeof *m0[i]));
 		m1[i] = new double [MATRIX_DIM];
+		memset(m1[i], 0, MATRIX_DIM*(sizeof *m1[i]));
 		m2[i] = new double [MATRIX_DIM];
+		memset(m2[i], 0, MATRIX_DIM*(sizeof *m2[i]));
 		m3[i] = new double [MATRIX_DIM];
+		memset(m3[i], 0, MATRIX_DIM*(sizeof *m3[i]));
 		nm0[i] = new double [MATRIX_DIM];
+		memset(nm0[i], 0, MATRIX_DIM*(sizeof *nm0[i]));
 		nm1[i] = new double [MATRIX_DIM];
+		memset(nm1[i], 0, MATRIX_DIM*(sizeof *nm1[i]));
 		nm2[i] = new double [MATRIX_DIM];
+		memset(nm2[i], 0, MATRIX_DIM*(sizeof *nm2[i]));
 		nm3[i] = new double [MATRIX_DIM];
+		memset(nm3[i], 0, MATRIX_DIM*(sizeof *nm3[i]));
 	}
 	for (int i = 0; i < 4; ++i)
 	{
 		W[i] = new double [4];
 		WWall[i] = new double [4];
+		memset(W[i], 0, 4*(sizeof *W[i]));
+		memset(WWall[i], 0, 4*(sizeof *WWall[i]));
 	}
 }
 
-void cpuAlgoPixelFlow_delete()
+void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_delete()
 {
 	for (int i = 0; i < MATRIX_DIM; ++i)
 	{
@@ -115,7 +116,7 @@ void cpuAlgoPixelFlow_delete()
 	delete [] WWall;
 }
 
-void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[])
+void CPU_UNOPTIMIZED::cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[])
 {
 	// copy values from test matrix
 	//	m0 = matrixTest[0];
@@ -123,8 +124,8 @@ void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], doubl
 	//	m2 = matrixTest[2];
 	//	m3 = matrixTest[3];
 
-	src_amplitude = 1;
-	src_frequency = 1;
+	src_amplitude = 1.0;
+	src_frequency = 1.0;
 
 	sourceLoc[0] = in_sourceLoc[0]; sourceLoc[1] = in_sourceLoc[1];
 
@@ -133,7 +134,7 @@ void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], doubl
 		for (int y = 0; y < 4;  y++)
 		{
 			W[x][y] = matrixFlow[x][y] * (coef/2.0);
-			//printf("matrixFlow[%d][%d] = %f \n", x, y, matrixFlow[x][y]);
+			//printf("matrixFlow[%d][%d] = %f, W = %f\n", x, y, matrixFlow[x][y], W[x][y]);
 		}
 	}
 
@@ -145,29 +146,28 @@ void cpuAlgoPixelFlow(unsigned int num_iterations, double matrixFlow[][4], doubl
 		}
 	}
 
-
+	source = 0;
 	for (int t = 0; t < num_iterations; t++)
 	{
-
+		/*for (int i = 0; i < MATRIX_DIM; i++)
+		{
+			printf("Row %d: %.9G, %.9G, %.9G, %.9G, %.9G \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
+		}*/
 		cpuAlgoPixelFlow_updateSource(t);
 		cpuAlgoPixelFlow_nextStep();
 //		printf("Iteration %d complete. \n", t);
-//		// display matrix values:
-		for (int i = 0; i < MATRIX_DIM; i++)
-		{
-			printf("Row %d: %f, %f, %f, %f, %f \n", i, m0[i][0], m0[i][1], m0[i][2], m0[i][3], m0[i][4]);
-		}
+//		// display matrix values:		
 	}
 }
 
-void cpuAlgoPixelFlow_updateSource(int t)
+void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_updateSource(int t)
 {
-	source = src_amplitude * sin(2 * PI * src_frequency * t * 0.01); //0.01 is from original java code
+	source = src_amplitude * sin(2 * 3.14159 * src_frequency * (double)(t) * 0.01); //0.01 is from original java code
 }
 
-void cpuAlgoPixelFlow_nextStep(void)
+void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_nextStep(void)
 {
-	double f0, f1, f2, f3;
+	double f0 = 0, f1 = 0, f2 = 0, f3 = 0;
 	double newF[4];
 	bool isWall;
 	for (int x = 0; x < MATRIX_DIM; x++)
@@ -179,7 +179,7 @@ void cpuAlgoPixelFlow_nextStep(void)
 			f1 = m1[x][y];
 			f2 = m2[x][y];
 			f3 = m3[x][y];
-
+			
 			newF[0] = 0;
 			newF[1] = 0;
 			newF[2] = 0;
@@ -195,20 +195,26 @@ void cpuAlgoPixelFlow_nextStep(void)
 			}
 
 			// check if pixel is a wall
-			isWall = matrixWallLoc[x][y];
+			isWall = (bool)(matrixWallLoc[x][y]);
 
 			if (isWall)
 			{
 				for (int i = 0; i < WWAL_LENGTH; i++)
 				{
-					newF[i] += WWall[0][i]*f0 + WWall[1][i]*f1+WWall[2][i]*f2+WWall[3][i]*f3;
+					newF[i] = WWall[0][i]*f0 + WWall[1][i]*f1+WWall[2][i]*f2+WWall[3][i]*f3;
 				}
 			}
 			else
 			{
 				for (int i = 0; i < W_LENGTH; i++)
 				{
-					newF[i] += W[0][i]*f0 + W[1][i]*f1 + W[2][i]*f2 + W[3][i]*f3;
+					/*double w0i = W[0][i];
+					double w1i = W[1][i];
+					double w2i = W[2][i];
+					double w3i = W[3][i];
+					double testf = f0*w0i;*/
+					newF[i] = W[0][i]*f0 + W[1][i]*f1 + W[2][i]*f2 + W[3][i]*f3;
+					//newF[i] = w0i*f0 + w1i*f1 + w2i*f2 + w3i*f3;
 				}
 			}
 
@@ -250,4 +256,4 @@ void cpuAlgoPixelFlow_nextStep(void)
 		}
 	}
 }
-}
+
