@@ -21,6 +21,8 @@
 //	extern int entries;
 //}
 
+#include <map>
+
 class CPU_UNOPTIMIZED
 {
 private:
@@ -36,13 +38,21 @@ private:
 	int WWAL_LENGTH ;
 	int W_LENGTH;
 
-	double ** m0, ** nm0; // try the linear allocation method for timing comparison
+	double ** m0, ** nm0; 
 	double ** m1, ** nm1;
 	double ** m2, ** nm2;
 	double ** m3, ** nm3;
 	double ** W, ** WWall;
 
-	int matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+#if (WALL_MEMORY==MEM_STACK)
+	bool matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+#elif (WALL_MEMORY==MEM_MAP)
+	std::map<int,std::map<int,bool> > mapWallLoc;
+#elif (WALL_MEMORY==MEM_HEAP)
+	bool ** heapWallLoc;
+#else
+	#error("Select valid WALL_MEMORY in common.h")
+#endif
 
 public:
 	CPU_UNOPTIMIZED(); // default constructor

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="D:\Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\ref_cpuAlgoPixelFlow.cpp" md5="">
+    <snippet line="53">
+      <line line="50">    #endif</line>
+      <line line="51"/>
+      <line line="52">    m0 = new double * [MATRIX_DIM];</line>
+      <line line="53">    m1 = new double * [MATRIX_DIM];</line>
+      <line line="54">    m2 = new double * [MATRIX_DIM];</line>
+    </snippet>
+    <snippet line="76">
+      <line line="73">        m3[i] = new double [MATRIX_DIM];</line>
+      <line line="74">        memset(m3[i], 0, MATRIX_DIM*(sizeof *m3[i]));</line>
+      <line line="75">        nm0[i] = new double [MATRIX_DIM];</line>
+      <line line="76">        memset(nm0[i], 0, MATRIX_DIM*(sizeof *nm0[i]));</line>
+      <line line="77">        nm1[i] = new double [MATRIX_DIM];</line>
+    </snippet>
+    <snippet line="78">
+      <line line="75">        nm0[i] = new double [MATRIX_DIM];</line>
+      <line line="76">        memset(nm0[i], 0, MATRIX_DIM*(sizeof *nm0[i]));</line>
+      <line line="77">        nm1[i] = new double [MATRIX_DIM];</line>
+      <line line="78">        memset(nm1[i], 0, MATRIX_DIM*(sizeof *nm1[i]));</line>
+      <line line="79">        nm2[i] = new double [MATRIX_DIM];</line>
+    </snippet>
+    <snippet line="80">
+      <line line="77">        nm1[i] = new double [MATRIX_DIM];</line>
+      <line line="78">        memset(nm1[i], 0, MATRIX_DIM*(sizeof *nm1[i]));</line>
+      <line line="79">        nm2[i] = new double [MATRIX_DIM];</line>
+      <line line="80">        memset(nm2[i], 0, MATRIX_DIM*(sizeof *nm2[i]));</line>
+      <line line="81">        nm3[i] = new double [MATRIX_DIM];</line>
+    </snippet>
+    <snippet line="82">
+      <line line="79">        nm2[i] = new double [MATRIX_DIM];</line>
+      <line line="80">        memset(nm2[i], 0, MATRIX_DIM*(sizeof *nm2[i]));</line>
+      <line line="81">        nm3[i] = new double [MATRIX_DIM];</line>
+      <line line="82">        memset(nm3[i], 0, MATRIX_DIM*(sizeof *nm3[i]));</line>
+      <line line="83">    }</line>
+    </snippet>
+    <snippet line="87">
+      <line line="84">    for (int i = 0; i &lt; 4; ++i)</line>
+      <line line="85">    {</line>
+      <line line="86">        W[i] = new double [4];</line>
+      <line line="87">        WWall[i] = new double [4];</line>
+      <line line="88">        memset(W[i], 0, 4*(sizeof *W[i]));</line>
+    </snippet>
+    <snippet line="88">
+      <line line="85">    {</line>
+      <line line="86">        W[i] = new double [4];</line>
+      <line line="87">        WWall[i] = new double [4];</line>
+      <line line="88">        memset(W[i], 0, 4*(sizeof *W[i]));</line>
+      <line line="89">        memset(WWall[i], 0, 4*(sizeof *WWall[i]));</line>
+    </snippet>
+  </file>
+</snippets>

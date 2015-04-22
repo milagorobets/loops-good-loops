@@ -1,0 +1,118 @@
+-r
+D:\Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\My Amplifier XE Results - pixelFlow_AllImplementations\r001ge
+--itt-config=frame
+--data-limit-mb=500
+--event-config=CYCLE_ACTIVITY.STALLS_LDM_PENDING:,CYCLE_ACTIVITY.CYCLES_NO_EXECUTE:,OFFCORE_REQUESTS_OUTSTANDING.CYCLES_WITH_DEMAND_DATA_RD,OFFCORE_REQUESTS_OUTSTANDING.DEMAND_DATA_RD:cmask=6,OFFCORE_RESPONSE:request=ALL_DATA_RD:response=L3_MISS.LOCAL_DRAM:,MEM_LOAD_UOPS_RETIRED.L3_HIT_PS:,MEM_LOAD_UOPS_L3_MISS_RETIRED.LOCAL_DRAM:,MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_HIT_PS:,DTLB_LOAD_MISSES.STLB_HIT_2M:,DTLB_LOAD_MISSES.STLB_HIT_4K:,DTLB_LOAD_MISSES.WALK_DURATION:,MEM_LOAD_UOPS_L3_MISS_RETIRED.LOCAL_DRAM_PS:,DTLB_STORE_MISSES.STLB_HIT_2M:,DTLB_STORE_MISSES.STLB_HIT_4K:,MEM_LOAD_UOPS_L3_HIT_RETIRED.XSNP_HITM_PS:,MEM_LOAD_UOPS_RETIRED.L1_MISS:,L1D_PEND_MISS.PENDING:,RS_EVENTS.EMPTY_CYCLES:,RESOURCE_STALLS.SB:,DTLB_STORE_MISSES.WALK_DURATION:,IDQ.MS_UOPS:,ILD_STALL.LCP:,UOPS_EXECUTED.CYCLES_GE_1_UOPS_EXEC:,UOPS_EXECUTED.CYCLES_GE_2_UOPS_EXEC:,UOPS_EXECUTED.CYCLES_GE_3_UOPS_EXEC:,IDQ.ALL_MITE_CYCLES_4_UOPS:,IDQ.ALL_MITE_CYCLES_ANY_UOPS:,IDQ.ALL_DSB_CYCLES_4_UOPS:,IDQ.ALL_DSB_CYCLES_ANY_UOPS:,IDQ_UOPS_NOT_DELIVERED.CYCLES_0_UOPS_DELIV.CORE:,BR_MISP_RETIRED.ALL_BRANCHES_PS:,CPU_CLK_UNHALTED.REF_TSC:,CPU_CLK_UNHALTED.THREAD:,ICACHE.MISSES:,IDQ_UOPS_NOT_DELIVERED.CORE:,INST_RETIRED.ANY:,ITLB_MISSES.WALK_DURATION:,L1D.REPLACEMENT:,L2_LINES_IN.ALL:,LD_BLOCKS.STORE_FORWARD:,LD_BLOCKS_PARTIAL.ADDRESS_ALIAS:,MACHINE_CLEARS.MASKMOV:,MACHINE_CLEARS.MEMORY_ORDERING:,MACHINE_CLEARS.SMC:,MEM_UOPS_RETIRED.ALL_STORES_PS:,MEM_UOPS_RETIRED.SPLIT_LOADS_PS:,MEM_UOPS_RETIRED.SPLIT_STORES_PS:,UOPS_ISSUED.ANY:,UOPS_RETIRED.RETIRE_SLOTS:,INT_MISC.RECOVERY_CYCLES:,CPU_CLK_UNHALTED.THREAD_P:,CYCLE_ACTIVITY.STALLS_L1D_PENDING,CYCLE_ACTIVITY.STALLS_L2_PENDING,MEM_LOAD_UOPS_RETIRED.L3_MISS_PS,ICACHE.IFETCH_STALL,LD_BLOCKS.NO_SR,MACHINE_CLEARS.COUNT,RS_EVENTS.EMPTY_END:sa=200003,IDQ.MS_SWITCHES,BACLEARS.ANY,DSB2MITE_SWITCHES.PENALTY_CYCLES,MEM_LOAD_UOPS_RETIRED.HIT_LFB,ITLB_MISSES.STLB_HIT
+--sample-after-multiplier=1.0
+--event-mux
+--mrte-mode=native
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest\Release
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest
+--search-dir
+bin=D:\Mila\CPUGPUSTUFF\smalltest\Release
+--search-dir
+bin=D:\Mila\CPUGPUSTUFF\smalltest
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(WindowsSdkDir)bin\NETFX 4.0 Tools
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(WindowsSdkDir)bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\tools
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\ide
+--search-dir
+bin=C:\Program Files (x86)\HTML Help Workshop
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\SDK\v2.0\bin
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(MSBuildToolsPath32)
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0
+--search-dir
+bin=C:\Windows\SysWow64
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(FxCopDir)
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\mpirt
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32\mpirt
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32\compiler
+--search-dir
+bin=c:\Software\octave3.6.4\bin
+--search-dir
+bin=C:\Program Files (x86)\Qucs\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\libnvvp
+--search-dir
+bin=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\libnvvp
+--search-dir
+bin=C:\Windows\system32
+--search-dir
+bin=C:\Windows
+--search-dir
+bin=C:\Windows\System32\Wbem
+--search-dir
+bin=C:\Windows\System32\WindowsPowerShell\v1.0
+--search-dir
+bin=C:\Program Files (x86)\QuickTime\QTSystem
+--search-dir
+bin=C:\Program Files\MATLAB\R2013a\runtime\win64
+--search-dir
+bin=C:\Program Files\MATLAB\R2013a\bin
+--search-dir
+bin=C:\Program Files\MATLAB\R2012a\runtime\win64
+--search-dir
+bin=C:\Program Files\MATLAB\R2012a\bin
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\110\Tools\Binn
+--search-dir
+bin=C:\Program Files (x86)\MiKTeX 2.9\miktex\bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\100\Tools\Binn
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\100\DTS\Binn
+--search-dir
+bin=C:\Program Files\Microsoft Windows Performance Toolkit
+--search-dir
+bin=D:\Mila\GPU\Parallel Programming Class\opencv\build\x64\vc10\bin
+--search-dir
+bin=C:\eclipse\JCUDA
+--search-dir
+bin=C:\Program Files (x86)\mingw32\bin
+--search-dir
+bin=c:\iverilog\bin
+--search-dir
+bin=c:\iverilog\gtkwave\bin
+--search-dir
+bin=C:\Program Files (x86)\GitExtensions
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\pcb\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\fet\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\OpenAccess\bin\win32\opt
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\Capture
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\PSpice
+--
+D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe

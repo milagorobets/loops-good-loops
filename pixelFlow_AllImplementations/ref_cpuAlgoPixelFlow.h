@@ -21,6 +21,8 @@
 //	extern int entries;
 //}
 
+#include <map>
+
 class CPU_REFERENCE
 {
 private:
@@ -42,7 +44,11 @@ private:
 	double ** m3, ** nm3;
 	double ** W, ** WWall;
 
-	int matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+#if (WALL_MEMORY==MEM_STACK)
+	bool matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+#else
+	std::map<int,std::map<int,bool> > mapWallLoc;
+#endif
 
 public:
 	CPU_REFERENCE(); // default constructor

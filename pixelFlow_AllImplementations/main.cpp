@@ -103,6 +103,7 @@ int main(void)
 			//printf("ref: %f, calc: %f \n", refM0, tM0);
 			if (!((tM0 < (refM0 + CHECK_TOLERANCE)) && (tM0 > (refM0 - CHECK_TOLERANCE)))) // need tolerance
 			{
+				printf("Expected %f, but was %f \n", refM0, tM0);
 				wrong++;
 			}
 		}

@@ -1,0 +1,49 @@
+
+=== Start: [2015/04/21 15:59:45] === 
+Analysis started...
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\My Inspector XE Results - pixelFlow_AllImplementations\r001mi3\r001mi3.inspxe 
+Analysis started for D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe (pid = 9440) 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe, address range [0x000E0000-0x000ECFFF] 
+Loaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll, address range [0x56000000-0x5616BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x74CA0000-0x74CABFFF] 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74CB0000-0x74D0FFFF] 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x74DC0000-0x74EBFFFF] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74F40000-0x74F49FFF] 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x751F0000-0x7529BFFF] 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x754E0000-0x7556FFFF] 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75570000-0x7567FFFF] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x756B0000-0x7570FFFF] 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x75730000-0x757CFFFF] 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75950000-0x75A3FFFF] 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75BC0000-0x75C8BFFF] 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x75C90000-0x75CA8FFF] 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x769F0000-0x76A36FFF] 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x76C40000-0x76CDCFFF] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x772A0000-0x7741FFFF] 
+Loaded module: C:\Program Files (x86)\Intel\Composer XE 2015\redist\ia32\compiler\libmmd.dll, address range [0x0F030000-0x0F42FFFF] 
+Loaded module: C:\Windows\system32\MSVCR100.dll, address range [0x736D0000-0x7378EFFF] 
+Process D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe exited with code 0. Leak analysis starting. Please wait... 
+Unloaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe 
+Unloaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll 
+Unloaded module: C:\Windows\syswow64\CRYPTBASE.dll 
+Unloaded module: C:\Windows\syswow64\SspiCli.dll 
+Unloaded module: C:\Windows\syswow64\USER32.dll 
+Unloaded module: C:\Windows\syswow64\LPK.dll 
+Unloaded module: C:\Windows\syswow64\msvcrt.dll 
+Unloaded module: C:\Windows\syswow64\GDI32.dll 
+Unloaded module: C:\Windows\syswow64\kernel32.dll 
+Unloaded module: C:\Windows\system32\IMM32.DLL 
+Unloaded module: C:\Windows\syswow64\ADVAPI32.dll 
+Unloaded module: C:\Windows\syswow64\RPCRT4.dll 
+Unloaded module: C:\Windows\syswow64\MSCTF.dll 
+Unloaded module: C:\Windows\SysWOW64\sechost.dll 
+Unloaded module: C:\Windows\syswow64\KERNELBASE.dll 
+Unloaded module: C:\Windows\syswow64\USP10.dll 
+Unloaded module: C:\Windows\SysWOW64\ntdll.dll 
+Unloaded module: C:\Program Files (x86)\Intel\Composer XE 2015\redist\ia32\compiler\libmmd.dll 
+Unloaded module: C:\Windows\system32\MSVCR100.dll 
+Completed analysis for D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe 
+Application exit code: 0 
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\My Inspector XE Results - pixelFlow_AllImplementations\r001mi3\r001mi3.inspxe 
+Analysis completed
+=== End: [2015/04/21 15:59:57] === 

@@ -1,0 +1,121 @@
+-r
+D:\Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\My Amplifier XE Results - pixelFlow_AllImplementations\r002ah
+--itt-config=frame
+--data-limit-mb=500
+--event-config=CPU_CLK_UNHALTED.THREAD:sa=3200000,CPU_CLK_UNHALTED.REF_TSC:sa=3200000,INST_RETIRED.ANY:sa=3200000,BR_INST_RETIRED.NEAR_TAKEN:sa=200003:usr=yes:os=no:
+--bts-count=200
+--sample-after-multiplier=1.0
+--event-mux
+--collector=vtsspp
+--sys-config=cswitch
+--mrte-mode=native
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest\Release
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest
+--search-dir
+bin=D:\Mila\CPUGPUSTUFF\smalltest\Release
+--search-dir
+bin=D:\Mila\CPUGPUSTUFF\smalltest
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(WindowsSdkDir)bin\NETFX 4.0 Tools
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(WindowsSdkDir)bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools\bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\tools
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\ide
+--search-dir
+bin=C:\Program Files (x86)\HTML Help Workshop
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0\SDK\v2.0\bin
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(MSBuildToolsPath32)
+--search-dir
+bin=C:\Program Files (x86)\Microsoft Visual Studio 10.0
+--search-dir
+bin=C:\Windows\SysWow64
+--search-dir
+bin=D:/Mila\CPUGPUSTUFF\smalltest\pixelFlow_AllImplementations\$(FxCopDir)
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\mpirt
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32\mpirt
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler
+--search-dir
+bin=C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\ia32\compiler
+--search-dir
+bin=c:\Software\octave3.6.4\bin
+--search-dir
+bin=C:\Program Files (x86)\Qucs\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\libnvvp
+--search-dir
+bin=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin
+--search-dir
+bin=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\libnvvp
+--search-dir
+bin=C:\Windows\system32
+--search-dir
+bin=C:\Windows
+--search-dir
+bin=C:\Windows\System32\Wbem
+--search-dir
+bin=C:\Windows\System32\WindowsPowerShell\v1.0
+--search-dir
+bin=C:\Program Files (x86)\QuickTime\QTSystem
+--search-dir
+bin=C:\Program Files\MATLAB\R2013a\runtime\win64
+--search-dir
+bin=C:\Program Files\MATLAB\R2013a\bin
+--search-dir
+bin=C:\Program Files\MATLAB\R2012a\runtime\win64
+--search-dir
+bin=C:\Program Files\MATLAB\R2012a\bin
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\110\Tools\Binn
+--search-dir
+bin=C:\Program Files (x86)\MiKTeX 2.9\miktex\bin
+--search-dir
+bin=C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\100\Tools\Binn
+--search-dir
+bin=C:\Program Files\Microsoft SQL Server\100\DTS\Binn
+--search-dir
+bin=C:\Program Files\Microsoft Windows Performance Toolkit
+--search-dir
+bin=D:\Mila\GPU\Parallel Programming Class\opencv\build\x64\vc10\bin
+--search-dir
+bin=C:\eclipse\JCUDA
+--search-dir
+bin=C:\Program Files (x86)\mingw32\bin
+--search-dir
+bin=c:\iverilog\bin
+--search-dir
+bin=c:\iverilog\gtkwave\bin
+--search-dir
+bin=C:\Program Files (x86)\GitExtensions
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\pcb\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\fet\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\OpenAccess\bin\win32\opt
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\bin
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\Capture
+--search-dir
+bin=C:\OrCAD\OrCAD_16.6_Lite\tools\PSpice
+--
+D:\Mila\CPUGPUSTUFF\smalltest\Release\pixelFlow_AllImplementations.exe

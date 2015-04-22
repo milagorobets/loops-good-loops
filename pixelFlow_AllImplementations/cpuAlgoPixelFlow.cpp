@@ -25,7 +25,13 @@ double CPU_UNOPTIMIZED::get_M0(int x, int y)
 
 void CPU_UNOPTIMIZED::setMatrixWallLoc(int x, int y, int val)
 {
+	#if (WALL_MEMORY==MEM_STACK)
 	matrixWallLoc[x][y] = val;
+	#elif (WALL_MEMORY==MEM_MAP)
+	mapWallLoc[x][y] = val;
+	#elif(WALL_MEMORY==MEM_HEAP)
+	heapWallLoc[x][y] = val;
+	#endif
 }
 
 void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(void)
@@ -36,6 +42,7 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(void)
 	WWAL_LENGTH = 4;
 	W_LENGTH = 4;
 
+	#if (WALL_MEMORY==MEM_STACK)
 	for (int x = 0; x < MATRIX_DIM; x++)
 	{
 		for (int y = 0; y < MATRIX_DIM; y++)
@@ -43,6 +50,14 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(void)
 			matrixWallLoc[x][y] = 0;
 		}
 	}
+	#elif (WALL_MEMORY==MEM_HEAP)
+	heapWallLoc = new bool * [MATRIX_DIM];
+	for (int x = 0; x < MATRIX_DIM; x++)
+	{
+		heapWallLoc[x] = new bool [MATRIX_DIM];
+		memset(heapWallLoc[x], 0, MATRIX_DIM*(sizeof *heapWallLoc[x]));
+	}
+	#endif
 
 	m0 = new double * [MATRIX_DIM];
 	m1 = new double * [MATRIX_DIM];
@@ -87,6 +102,13 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(void)
 
 void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_delete()
 {
+#if (WALL_MEMORY == MEM_HEAP)
+	for (int x = 0; x < MATRIX_DIM; ++x)
+	{
+		delete [] heapWallLoc[x];
+	}
+	delete [] heapWallLoc;
+#endif
 	for (int i = 0; i < MATRIX_DIM; ++i)
 	{
 		delete [] m0[i];
@@ -162,7 +184,7 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow(unsigned int num_iterations, double matri
 
 void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_updateSource(int t)
 {
-	source = src_amplitude * sin(2 * 3.14159 * src_frequency * (double)(t) * 0.01); //0.01 is from original java code
+	source = src_amplitude * sin(2 * PI * src_frequency * (double)(t) * 0.01); //0.01 is from original java code
 }
 
 void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_nextStep(void)
@@ -195,7 +217,13 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow_nextStep(void)
 			}
 
 			// check if pixel is a wall
+			#if (WALL_MEMORY==MEM_STACK)
 			isWall = (bool)(matrixWallLoc[x][y]);
+			#elif (WALL_MEMORY == MEM_MAP)
+			isWall = (mapWallLoc.find(x) != mapWallLoc.end() && mapWallLoc[x].find(y) != mapWallLoc[x].end());
+			#elif (WALL_MEMORY == MEM_HEAP)
+			isWall = (bool)(heapWallLoc[x][y]);
+			#endif
 
 			if (isWall)
 			{
