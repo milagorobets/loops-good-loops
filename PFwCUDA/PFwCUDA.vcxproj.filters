@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
+    <CudaCompile Include="cPFkernel.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{bed6de93-8449-4f9b-a071-34ac456a429d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuAlgoPixelFlow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuAlgoPixelFlow_v.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuAlgoPixelFlow_v_1d.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="init.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="ref_cpuAlgoPixelFlow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cPFkernel.cuh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="gpuAlgoPixelFlow.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cpuAlgoPixelFlow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="cpuAlgoPixelFlow_v.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="cpuAlgoPixelFlow_v_1d.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="gpuAlgoPixelFlow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="init.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="ref_cpuAlgoPixelFlow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

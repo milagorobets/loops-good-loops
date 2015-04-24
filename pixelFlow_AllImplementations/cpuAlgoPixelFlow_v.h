@@ -9,6 +9,7 @@
 #define CPUALGOPIXELFLOW_V_H_
 
 #include <vector>
+#include <map>
 
 //namespace CPU_VECTOR
 //{
@@ -45,7 +46,15 @@ private:
 
 	double W00, W01, W02, W03, W10, W11, W12, W13, W20, W21, W22, W23, W30, W31, W32, W33;
 
-	int matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+	#if (WALL_MEMORY==MEM_STACK)
+	bool matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
+#elif (WALL_MEMORY==MEM_MAP)
+	std::map<int,std::map<int,bool> > mapWallLoc;
+#elif (WALL_MEMORY==MEM_HEAP)
+	bool ** heapWallLoc;
+#else
+	#error("Select valid WALL_MEMORY in common.h")
+#endif
 
 public:
 	CPU_VECTOR(); // default constructor

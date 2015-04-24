@@ -1,0 +1,85 @@
+
+=== Start: [2015/04/24 11:35:16] === 
+Analysis started...
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r000mi3\r000mi3.inspxe 
+Analysis started for D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe (pid = 12080) 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe, address range [0x002A0000-0x002AEFFF] 
+Loaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll, address range [0x56000000-0x5616BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x74CA0000-0x74CABFFF] 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74CB0000-0x74D0FFFF] 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x74DC0000-0x74EBFFFF] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x74F40000-0x74F49FFF] 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x751F0000-0x7529BFFF] 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x754E0000-0x7556FFFF] 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75570000-0x7567FFFF] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x756B0000-0x7570FFFF] 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x75730000-0x757CFFFF] 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75950000-0x75A3FFFF] 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x75BC0000-0x75C8BFFF] 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x75C90000-0x75CA8FFF] 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x769F0000-0x76A36FFF] 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x76C40000-0x76CDCFFF] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x772A0000-0x7741FFFF] 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\cudart32_65.dll, address range [0x67C30000-0x67C70FFF] 
+Loaded module: C:\Windows\system32\MSVCR100.dll, address range [0x736D0000-0x7378EFFF] 
+Loaded module: C:\Windows\system32\nvcuda.dll, address range [0x0FCE0000-0x1072BFFF] 
+Loaded module: C:\Windows\syswow64\SETUPAPI.dll, address range [0x76AA0000-0x76C3CFFF] 
+Loaded module: C:\Windows\syswow64\CFGMGR32.dll, address range [0x75680000-0x756A6FFF] 
+Loaded module: C:\Windows\syswow64\OLEAUT32.dll, address range [0x76960000-0x769EEFFF] 
+Loaded module: C:\Windows\syswow64\ole32.dll, address range [0x74FC0000-0x7511BFFF] 
+Loaded module: C:\Windows\syswow64\DEVOBJ.dll, address range [0x74DA0000-0x74DB1FFF] 
+Loaded module: C:\Windows\system32\VERSION.dll, address range [0x74BD0000-0x74BD8FFF] 
+Loaded module: C:\Windows\syswow64\SHELL32.dll, address range [0x75CB0000-0x768FAFFF] 
+Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x74F50000-0x74FA6FFF] 
+Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x75B70000-0x75BA4FFF] 
+Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x75150000-0x75155FFF] 
+Loaded module: C:\Windows\system32\dwmapi.dll, address range [0x6F1E0000-0x6F1F2FFF] 
+Unloaded module: C:\Windows\system32\dwmapi.dll 
+Loaded module: C:\Windows\system32\gdi32.dll, address range [0x05400000-0x0548FFFF] 
+Unloaded module: C:\Windows\system32\gdi32.dll 
+Loaded module: C:\Windows\system32\nvapi.dll, address range [0x0F430000-0x0F717FFF] 
+Loaded module: C:\Windows\system32\gdi32.dll, address range [0x05780000-0x0580FFFF] 
+Unloaded module: C:\Windows\system32\gdi32.dll 
+Loaded module: C:\Windows\syswow64\WINTRUST.dll, address range [0x75120000-0x7514EFFF] 
+Loaded module: C:\Windows\syswow64\CRYPT32.dll, address range [0x757D0000-0x758F0FFF] 
+Loaded module: C:\Windows\syswow64\MSASN1.dll, address range [0x75710000-0x7571BFFF] 
+Process D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe exited with code 0. Leak analysis starting. Please wait... 
+Unloaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe 
+Unloaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll 
+Unloaded module: C:\Windows\syswow64\CRYPTBASE.dll 
+Unloaded module: C:\Windows\syswow64\SspiCli.dll 
+Unloaded module: C:\Windows\syswow64\USER32.dll 
+Unloaded module: C:\Windows\syswow64\LPK.dll 
+Unloaded module: C:\Windows\syswow64\msvcrt.dll 
+Unloaded module: C:\Windows\syswow64\GDI32.dll 
+Unloaded module: C:\Windows\syswow64\kernel32.dll 
+Unloaded module: C:\Windows\system32\IMM32.DLL 
+Unloaded module: C:\Windows\syswow64\ADVAPI32.dll 
+Unloaded module: C:\Windows\syswow64\RPCRT4.dll 
+Unloaded module: C:\Windows\syswow64\MSCTF.dll 
+Unloaded module: C:\Windows\SysWOW64\sechost.dll 
+Unloaded module: C:\Windows\syswow64\KERNELBASE.dll 
+Unloaded module: C:\Windows\syswow64\USP10.dll 
+Unloaded module: C:\Windows\SysWOW64\ntdll.dll 
+Unloaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\cudart32_65.dll 
+Unloaded module: C:\Windows\system32\MSVCR100.dll 
+Unloaded module: C:\Windows\system32\nvcuda.dll 
+Unloaded module: C:\Windows\syswow64\SETUPAPI.dll 
+Unloaded module: C:\Windows\syswow64\CFGMGR32.dll 
+Unloaded module: C:\Windows\syswow64\OLEAUT32.dll 
+Unloaded module: C:\Windows\syswow64\ole32.dll 
+Unloaded module: C:\Windows\syswow64\DEVOBJ.dll 
+Unloaded module: C:\Windows\system32\VERSION.dll 
+Unloaded module: C:\Windows\syswow64\SHELL32.dll 
+Unloaded module: C:\Windows\syswow64\SHLWAPI.dll 
+Unloaded module: C:\Windows\syswow64\WS2_32.dll 
+Unloaded module: C:\Windows\syswow64\NSI.dll 
+Unloaded module: C:\Windows\system32\nvapi.dll 
+Unloaded module: C:\Windows\syswow64\WINTRUST.dll 
+Unloaded module: C:\Windows\syswow64\CRYPT32.dll 
+Unloaded module: C:\Windows\syswow64\MSASN1.dll 
+Completed analysis for D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe 
+Application exit code: 0 
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r000mi3\r000mi3.inspxe 
+Analysis completed
+=== End: [2015/04/24 11:35:37] === 

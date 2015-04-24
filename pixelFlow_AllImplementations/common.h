@@ -18,8 +18,8 @@
 // GPU_UNOPTIMIZED: code stupidly thrown at the GPU
 // GPU_DUAL_BUFFER: double-buffer computation and memory transfer for the GPU
 
-#define TEST_CLASS CPU_REFERENCE 
-#define REFERENCE_CLASS CPU_UNOPTIMIZED // Don't change this?
+#define TEST_CLASS CPU_VECTOR 
+#define REFERENCE_CLASS CPU_REFERENCE // Don't change this?
 
 #define CHECK_OUTPUT 1				// Compare output to known working version to make sure it is still correct
 #define CHECK_TOLERANCE 0.000001	// Tolerance for comparing floats
@@ -31,6 +31,9 @@
 #define MEM_STACK 1			// Stack (doesn't work for large matrices)
 #define MEM_MAP 0			// Map because it's so sparse (slower than stack)
 #define MEM_HEAP 2			// Put it on the heap!
-//** TODO: add heap functionality **//
+
+#if (WALL_MEMORY == MEM_STACK)
+#warning("Remember to increase the stack allocation!")
+#endif
 
 #endif /* COMMON_H_ */

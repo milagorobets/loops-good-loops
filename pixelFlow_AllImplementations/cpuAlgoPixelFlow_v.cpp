@@ -25,7 +25,13 @@ double CPU_VECTOR::get_M0(int x, int y)
 
 void CPU_VECTOR::setMatrixWallLoc(int x, int y, int val)
 {
+	#if (WALL_MEMORY==MEM_STACK)
 	matrixWallLoc[x][y] = val;
+	#elif (WALL_MEMORY==MEM_MAP)
+	mapWallLoc[x][y] = val;
+	#elif(WALL_MEMORY==MEM_HEAP)
+	heapWallLoc[x][y] = val;
+	#endif
 }
 
 void CPU_VECTOR::cpuAlgoPixelFlow_init(void)
@@ -35,6 +41,7 @@ void CPU_VECTOR::cpuAlgoPixelFlow_init(void)
 	WWAL_LENGTH = 4;
 	W_LENGTH = 4;
 
+	#if (WALL_MEMORY==MEM_STACK)
 	for (int x = 0; x < MATRIX_DIM; x++)
 	{
 		for (int y = 0; y < MATRIX_DIM; y++)
@@ -42,6 +49,14 @@ void CPU_VECTOR::cpuAlgoPixelFlow_init(void)
 			matrixWallLoc[x][y] = 0;
 		}
 	}
+	#elif (WALL_MEMORY==MEM_HEAP)
+	heapWallLoc = new bool * [MATRIX_DIM];
+	for (int x = 0; x < MATRIX_DIM; x++)
+	{
+		heapWallLoc[x] = new bool [MATRIX_DIM];
+		memset(heapWallLoc[x], 0, MATRIX_DIM*(sizeof *heapWallLoc[x]));
+	}
+	#endif
 
 	m0.resize(MATRIX_DIM);
 	m1.resize(MATRIX_DIM);
@@ -157,7 +172,13 @@ void CPU_VECTOR::cpuAlgoPixelFlow_nextStep(void)
 			}
 
 			// check if pixel is a wall
+			#if (WALL_MEMORY==MEM_STACK)
 			isWall = (bool)(matrixWallLoc[x][y]);
+			#elif (WALL_MEMORY == MEM_MAP)
+			isWall = (mapWallLoc.find(x) != mapWallLoc.end() && mapWallLoc[x].find(y) != mapWallLoc[x].end());
+			#elif (WALL_MEMORY == MEM_HEAP)
+			isWall = (bool)(heapWallLoc[x][y]);
+			#endif
 
 			if (isWall)
 			{

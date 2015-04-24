@@ -33,6 +33,9 @@
     <ClInclude Include="ref_cpuAlgoPixelFlow.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpuAlgoPixelFlow.cpp">
@@ -56,5 +59,10 @@
     <ClCompile Include="ref_cpuAlgoPixelFlow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cPFkernel.cu">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -1,0 +1,10 @@
+131648	push ebp
+131649	mov ebp, esp
+131651	mov eax, dword ptr [ebp+0x8]
+131654	push eax
+131655	call dword ptr [0x1002a028]
+131661	pop ebp
+131662	ret 
+131663	int3 
+131664	push ebp
+131665	mov ebp, esp

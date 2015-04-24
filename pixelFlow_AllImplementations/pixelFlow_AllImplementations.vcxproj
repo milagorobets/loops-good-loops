@@ -76,6 +76,7 @@
     </ClInclude>
     <ClInclude Include="init.h" />
     <ClInclude Include="ref_cpuAlgoPixelFlow.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpuAlgoPixelFlow.cpp" />
@@ -89,6 +90,9 @@
     <ClCompile Include="init.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ref_cpuAlgoPixelFlow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cPFkernel.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

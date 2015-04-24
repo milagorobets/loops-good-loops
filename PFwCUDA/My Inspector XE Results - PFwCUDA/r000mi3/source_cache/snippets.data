@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="d:\mila\cpugpustuff\smalltest\pfwcuda\cpfkernel.cu" md5="">
+    <snippet line="222">
+      <line line="219">    cudaExtent m_extent = make_cudaExtent(sizeof(float)*matdim.x, matdim.y, matdim.z); // width, height, depth</line>
+      <line line="220">    cudaPitchedPtr m_device;</line>
+      <line line="221">    cudaMalloc3D(&amp;m_device, m_extent);</line>
+      <line line="222">    cudaMemcpy3DParms m_p = {0};</line>
+      <line line="223">    m_host = (float *)malloc(sizeof(float)*MATRIX_DIM*MATRIX_DIM*4); // need to initialize this somehow</line>
+    </snippet>
+    <snippet line="287">
+      <line line="284">        source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);</line>
+      <line line="285">        printf("Source: %f \n", source);</line>
+      <line line="286">        cudaDeviceSynchronize(); // For getting calculation results back</line>
+      <line line="287">    }    </line>
+      <line line="288"/>
+    </snippet>
+  </file>
+</snippets>
