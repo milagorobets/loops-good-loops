@@ -165,7 +165,16 @@ void CPU_UNOPTIMIZED::cpuAlgoPixelFlow(unsigned int num_iterations)
 	for (int t = 0; t < num_iterations; t++)
 	{
 		cpuAlgoPixelFlow_updateSource(t);
-		cpuAlgoPixelFlow_nextStep();		
+		cpuAlgoPixelFlow_nextStep();	
+		//for (int i = 0; i < MATRIX_DIM; i++)
+		//{
+		//	printf("Source: %f, Row %d: ", source, i);
+		//	for (int j = 0; j < MATRIX_DIM; j++)
+		//	{
+		//		printf("%f ", m0[j][i]);
+		//	}
+		//	printf("\n");
+		//}
 	}
 }
 
