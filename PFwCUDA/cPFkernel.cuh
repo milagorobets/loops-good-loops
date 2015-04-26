@@ -6,6 +6,7 @@
 __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
 									double src, dim3 srcloc, bool * wallLoc, float * WWall, float * W,
 									cudaPitchedPtr nmPtr);
+__global__ void PF_copymem_kernel(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExtent mExt, dim3 matdim);
 void callerblahblah(void);
 void cPFcaller(unsigned int num_iterations, float * &m_ptr);
 void cPFaddWallLocation(int x, int y, bool val);

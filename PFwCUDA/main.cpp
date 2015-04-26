@@ -45,6 +45,8 @@ int main(void)
 	printf("This project uses CUDA. April 23, 2015. \n");
 	printf("Testing: " STRING(TEST_CLASS) ": \n");
 
+	printf("size of double: %d, size of float: %d \n", sizeof(double), sizeof(float));
+
 	matrixFlow_types MATRIX_FLOW_TYPE = BASIC;
 	init_MatrixFlowType(&MATRIX_FLOW_TYPE, matrixFlow);
 

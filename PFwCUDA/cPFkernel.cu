@@ -19,7 +19,59 @@ __device__ unsigned int threads_report;
 
 __global__ void PF_copymem_kernel(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExtent mExt, dim3 matdim)
 {
-	
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+
+	float *m = (float*)mPtr.ptr;
+	float *nm = (float*)nmPtr.ptr;
+	size_t pitch = mPtr.pitch;
+	unsigned int e_per_row = pitch / SoF;
+	size_t slice_pitch = pitch*mExt.height;
+
+	if ((x < MATRIX_DIM) && (y < MATRIX_DIM))
+	{
+		m[CI(x, y, 0, e_per_row, matdim.y)] = nm[CI(x, y, 0, e_per_row, matdim.y)];
+		m[CI(x, y, 1, e_per_row, matdim.y)] = nm[CI(x, y, 1, e_per_row, matdim.y)];
+		m[CI(x, y, 2, e_per_row, matdim.y)] = nm[CI(x, y, 2, e_per_row, matdim.y)];
+		m[CI(x, y, 3, e_per_row, matdim.y)] = nm[CI(x, y, 3, e_per_row, matdim.y)];
+
+		//__syncthreads();
+
+		// Edge Cases
+		if (x == 0)
+		{
+			if (nm[CI(0, y, 0, e_per_row, matdim.y)] == 0)
+			{
+				m[CI(0, y, 0, e_per_row, matdim.y)] = nm[CI(1, y, 0, e_per_row, matdim.y)];
+			}
+		 }
+		 if (x == MATRIX_DIM-1)
+		 {
+			if (nm[CI(MATRIX_DIM-1, y, 1, e_per_row, matdim.y)] == 0)
+			{
+				m[CI(MATRIX_DIM-1, y, 1, e_per_row, matdim.y)] = nm[CI(MATRIX_DIM-2, y, 1, e_per_row, matdim.y)];
+			}
+		 }
+		 if (y == 0)
+		 {
+			if (nm[CI(x, 0, 2, e_per_row, matdim.y)] == 0)
+			{
+				m[CI(x, 0, 2, e_per_row, matdim.y)] = nm[CI(x, 1, 2, e_per_row, matdim.y)];
+			}
+		 }
+		 if (y == MATRIX_DIM-1)
+		 {
+			if (nm[CI(x, MATRIX_DIM-1, 3, e_per_row, matdim.y)] == 0)
+			{
+				m[CI(x, MATRIX_DIM-1, 3, e_per_row, matdim.y)] = nm[CI(x, MATRIX_DIM-2, 3, e_per_row, matdim.y)];
+			}
+		 }
+		 
+
+	 /*__syncthreads();
+	 printf("Location %d, %d, m0 = %f \n", x, y, m[CI(x, y, 2, e_per_row, matrix_dimensions.y)]);*/
+	 //__syncthreads();
+	}
 }
 
 __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
@@ -28,7 +80,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 {
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
-	if ((x == 0) && (y == 0)) threads_report = 0;
+	//if ((x == 0) && (y == 0)) threads_report = 0;
 		//if (x > MATRIX_DIM)
 		//{
 		//	printf("hello %d %d \n", x, y);
@@ -48,26 +100,13 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 	//int sof = sizeof(float);
 	size_t pitch = mPtr.pitch;
 	unsigned int e_per_row = pitch / SoF;
-	size_t slice_pitch = pitch*mExt.height;
+	//size_t slice_pitch = pitch*mExt.height;
 	///*float src = src_amplitude * sin(2 * PI * src_frequency * (double)(t) * 0.01);*/
-	char* m_addroff = (char*)(m + y * pitch + x * SoF);
+	//char* m_addroff = (char*)(m + y * pitch + x * SoF);
 	//printf("m(%d,%d) is %f \n", x, y, *(float*)(m_addroff)); 
 	//*(float*)(m_addroff) = 1;
 	//char* m1_addroff = m_addroff + 1 * slice_pitch; // Run kernel during init to set these up?
-	char* nm_addroff = (char*)(nm + y * pitch + x * SoF);
-	//char* m_ptr = m_addroff + 0 * slice_pitch;
-	//char * current_slice = m + 1 * slice_pitch; // z = slice number; current_slice = address of beginning of slice
-	//	for (int y = 0; y < matrix_dimensions.y; ++y)
-	//	{
-	//float * current_row = (float*)(current_slice + y * pitch); // address of the beginning of row in a slice
-	//		for (int x = 0; x < matrix_dimensions.x; ++x)
-	//		{
-	//			printf("Current element at %d, %d, %d: %f \n", x, y, z, current_row[x]);
-	//		}
-	//printf("current elem uo at %d %d is %f \n", x, y, current_row[x]);
-	//printf("current elem ao at %d %d is %f \n", x, y, *m1_addroff);
-	//char * m_ptr = m_addroff;
-	//float m0 = *(float*)(m_ptr);
+	//char* nm_addroff = (char*)(nm + y * pitch + x * SoF);
 	float m0 = m[CI(x, y, 0, e_per_row, matrix_dimensions.y)];
 	//m_ptr += slice_pitch; // just inc m_ptr by slice_pitch
 	//float m1 = *(float*)(m_ptr);
@@ -126,137 +165,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 		nm[CI(x, y - 1, 3, e_per_row, matrix_dimensions.y)] = newF[2];						// if (y > 0) nm3[x][y-1] = newF[2];
 	}
 
-	// sync after calculating nms
-	__syncthreads();
-	if ((threadIdx.x == 0) && (threadIdx.y == 0)) atomicAdd(&threads_report, 1);
-	printf("threadsreported %d \n", threads_report);
-	while (threads_report != blockDim.x*blockDim.y){}
-	
-
-	// Copy nm to m
-	//*(float*)(m_addroff) = *(float*)(nm_addroff);										// m0[x][y] = nm0[x][y]
-	//*(float*)(m_addroff + 1 * slice_pitch) = *(float*)(nm_addroff + 1 * slice_pitch);	// m1[x][y] = nm1[x][y]
-	//*(float*)(m_addroff + 2 * slice_pitch) = *(float*)(nm_addroff + 2 * slice_pitch);	// m2[x][y] = nm2[x][y]
-	//*(float*)(m_addroff + 3 * slice_pitch) = *(float*)(nm_addroff + 3 * slice_pitch);	// m3[x][y] = nm3[x][y]
-	m[CI(x, y, 0, e_per_row, matrix_dimensions.y)] = nm[CI(x, y, 0, e_per_row, matrix_dimensions.y)];
-	m[CI(x, y, 1, e_per_row, matrix_dimensions.y)] = nm[CI(x, y, 1, e_per_row, matrix_dimensions.y)];
-	m[CI(x, y, 2, e_per_row, matrix_dimensions.y)] = nm[CI(x, y, 2, e_per_row, matrix_dimensions.y)];
-	m[CI(x, y, 3, e_per_row, matrix_dimensions.y)] = nm[CI(x, y, 3, e_per_row, matrix_dimensions.y)];
-
-	//m[CI(x, y, 0, e_per_row, matrix_dimensions.y)] = CI(x, y, 0, e_per_row, matrix_dimensions.y);
-	//m[CI(x, y, 1, e_per_row, matrix_dimensions.y)] = CI(x, y, 1, e_per_row, matrix_dimensions.y);
-	//m[CI(x, y, 2, e_per_row, matrix_dimensions.y)] = CI(x, y, 2, e_per_row, matrix_dimensions.y);
-	//m[CI(x, y, 3, e_per_row, matrix_dimensions.y)] = CI(x, y, 3, e_per_row, matrix_dimensions.y);
-
-	__syncthreads();
-	 //printf("x = %d, y =  %d, m = %f \n", x, y, nm[CI(x, y, 0, e_per_row, matrix_dimensions.y)]);
-	//if (x == 3){
-	//	printf("hello, y = %d, m = %f \n", y, m[CI(x, y, 0, e_per_row, matrix_dimensions.y)]);
-	//}
-	// Edge Cases
-	if (x == 0)
-	 {
-		//if (*(float*)(nm_addroff) == 0) // if (nm0[0][y] == 0)
-		//{
-		//	*(float*)(m_addroff) = *(float*)(nm_addroff + sof); // m0[0][y] = nm0[1][y];
-		//}
-		if (nm[CI(0, y, 0, e_per_row, matrix_dimensions.y)] == 0)
-		{
-			m[CI(0, y, 0, e_per_row, matrix_dimensions.y)] = nm[CI(1, y, 0, e_per_row, matrix_dimensions.y)];
-		}
-	 }
-	 if (x == MATRIX_DIM-1)
-	 {
-		//if (*(float*)(nm_addroff + slice_pitch) == 0) // if (nm1[MATRIX_DIM-1][y] == 0)
-		//{	
-		//	*(float*)(m_addroff + slice_pitch) = *(float*)(nm_addroff + slice_pitch - sof); // m1[MATRIX_DIM-1][y] = nm1[MATRIX_DIM-2][y];
-		//}
-		if (nm[CI(MATRIX_DIM-1, y, 1, e_per_row, matrix_dimensions.y)] == 0)
-		{
-			m[CI(MATRIX_DIM-1, y, 1, e_per_row, matrix_dimensions.y)] = nm[CI(MATRIX_DIM-2, y, 1, e_per_row, matrix_dimensions.y)];
-		}
-	 }
-	 if (y == 0)
-	 {
-		//if (*(float*)(nm_addroff + 2 * slice_pitch) == 0) // if (nm2[x][0] == 0)
-		//{
-		//	*(float*)(m_addroff + 2 * slice_pitch) = *(float*)(nm_addroff + 2 * slice_pitch + pitch); // m2[x][0] = nm2[x][1];
-		//}
-		if (nm[CI(x, 0, 2, e_per_row, matrix_dimensions.y)] == 0)
-		{
-			m[CI(x, 0, 2, e_per_row, matrix_dimensions.y)] = nm[CI(x, 1, 2, e_per_row, matrix_dimensions.y)];
-		}
-	 }
-	 if (y == MATRIX_DIM-1)
-	 {
-		// if (*(float*)(nm_addroff + 3 * slice_pitch) == 0) // (nm3[x][MATRIX_DIM-1] == 0)
-		//{
-		//	*(float*)(m_addroff + 3 * slice_pitch) = *(float*)(nm_addroff + 3 * slice_pitch - pitch);	// m3[x][MATRIX_DIM-1] = nm3[x][MATRIX_DIM-2];
-		//}
-		if (nm[CI(x, MATRIX_DIM-1, 3, e_per_row, matrix_dimensions.y)] == 0)
-		{
-			m[CI(x, MATRIX_DIM-1, 3, e_per_row, matrix_dimensions.y)] = nm[CI(x, MATRIX_DIM-2, 3, e_per_row, matrix_dimensions.y)];
-		}
-	 }
-	 }
-
-	 /*__syncthreads();
-	 printf("Location %d, %d, m0 = %f \n", x, y, m[CI(x, y, 2, e_per_row, matrix_dimensions.y)]);*/
-	 __syncthreads();
-	/* m0[x][y] = nm0[x][y];
-			m1[x][y] = nm1[x][y];
-			m2[x][y] = nm2[x][y];
-			m3[x][y] = nm3[x][y];
-
-			if (nm0[0][y] == 0)
-			{
-				m0[0][y] = nm0[1][y];
-			}
-			if (nm2[x][0] == 0)
-			{
-				m2[x][0] = nm2[x][1];
-			}
-			if (nm1[MATRIX_DIM-1][y] == 0)
-			{
-				m1[MATRIX_DIM-1][y] = nm1[MATRIX_DIM-2][y];
-			}
-			if (nm3[x][MATRIX_DIM-1] == 0)
-			{
-				m3[x][MATRIX_DIM-1] = nm3[x][MATRIX_DIM-2];
-			}*/
-
-	//printf("Current m0 element at %d, %d is %f \n", x, y, m0[x]);
-	
-	//char *m = (char*)mPtr.ptr;
-	//size_t pitch = mPtr.pitch; // x padded to power of 2
-	////size_t pitch = 4*128;
-	////size_t slice_pitch = pitch*mExt.height;
-	//size_t slice_pitch = pitch * matrix_dimensions.y; // padded_x*y, whole slice
-
-	//for (int z = 0; z < matrix_dimensions.z; ++z)
-	//{
-	//	char * current_slice = m + z * slice_pitch; // z = slice number; current_slice = address of beginning of slice
-	//	for (int y = 0; y < matrix_dimensions.y; ++y)
-	//	{
-	//		float * current_row = (float*)(current_slice + y * pitch); // address of the beginning of row in a slice
-	//		for (int x = 0; x < matrix_dimensions.x; ++x)
-	//		{
-	//			printf("Current element at %d, %d, %d: %f \n", x, y, z, current_row[x]);
-	//		}
-	//	}
-	//}
-
-	 /*for(int k = 0; k < mExt.depth; k++)
-	{
-		char* slice = m + k*slice_pitch;
-		for (int j = 0; j < mExt.height; j++)
-		{
-			for (int 
-			float* row = (float*) (slice+j*pitch);
-			printf("%f \n", *row);
-		}
-	}*/
-
+	}
 }
 
 #define WWAL_DIMx 4
@@ -264,7 +173,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 #define W_DIMx 4
 #define W_DIMy W_DIMx
 
-#define BLOCK_DIMx ((MATRIX_DIM>16)?16:MATRIX_DIM) // vary this
+#define BLOCK_DIMx ((MATRIX_DIM>32)?32:MATRIX_DIM) // vary this
 #define BLOCK_DIMy  BLOCK_DIMx
 #define GRID_DIMx ((MATRIX_DIM + BLOCK_DIMx - 1)/BLOCK_DIMx)
 #define GRID_DIMy ((MATRIX_DIM + BLOCK_DIMy - 1)/BLOCK_DIMy)
@@ -293,38 +202,17 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	matdim.z = 4;
 
 	dim3 threads(BLOCK_DIMx,BLOCK_DIMy,1);
-	//dim3 threads(1,3,1);
 	dim3 grids(GRID_DIMx,GRID_DIMy,1);
 
 	// Allocate 3D array for m0-m3 (all together)
 	cudaExtent m_extent = make_cudaExtent(sizeof(float)*matdim.x, matdim.y, matdim.z); // width, height, depth
 	cudaPitchedPtr m_device;
 	cudaMalloc3D(&m_device, m_extent);
-	//cudaMemcpy3DParms m_p = {0};
+
 	m_host = (float *)malloc(sizeof(float)*MATRIX_DIM*MATRIX_DIM*4); // need to initialize this somehow
-	memset(m_host, 0, sizeof(float)*MATRIX_DIM*MATRIX_DIM*4); // set all to 0  -- do it on gpu cudamemset
+	//memset(m_host, 0, sizeof(float)*MATRIX_DIM*MATRIX_DIM*4); // set all to 0  -- do it on gpu cudamemset
 	m_ptr = m_host; // So that the class can access M values
 
-	//// assign some values to all array elements (testing):
-	// for (int z = 0; z < 4; z++)
-	//{
-	//	for (int y = 0; y < MATRIX_DIM; y++)
-	//	{
-	//		for (int x = 0; x < MATRIX_DIM; x++)
-	//		{
-	//			//m_host[z*MATRIX_DIM*MATRIX_DIM+y*MATRIX_DIM+x] = x+y*MATRIX_DIM+z*MATRIX_DIM*MATRIX_DIM;
-	//			m_host[z*MATRIX_DIM*MATRIX_DIM+y*MATRIX_DIM+x] = 0;
-	//			printf("m_host at %d,%d,%d is %f \n", x,y,z, m_host[z*MATRIX_DIM*MATRIX_DIM+y*MATRIX_DIM+x]);
-	//		}
-	//	}
-	//}
-	
-	//m_p.srcPtr = make_cudaPitchedPtr((void*)m_host, matdim.x*sizeof(float), matdim.x, matdim.y); // ptr, pitch (x*size), x, y
-	//m_p.dstPtr = m_device;
-	//m_p.extent = m_extent; // x, y, z
-	//m_p.kind = cudaMemcpyHostToDevice;
-	//status = cudaMemcpy3D(&m_p); 
-	//if (status != cudaSuccess){printf("M MemcpyHtD: %s \n", cudaGetErrorString(status));}
 	cudaMemset3D(m_device, 0, m_extent);
 
 	// Allocate 3D array for nm0-nm3
@@ -374,53 +262,22 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	hm_p.kind = cudaMemcpyDeviceToHost;
 
 	cudaDeviceSynchronize();
+	//clock_t t1; t1=clock();
 	for (int iter = 0; iter < gpu_iterations; iter++)
 	{
-		//cudaMemset3D(m_device, 0, m_extent);
-		//printf("Iteration %d: \n", iter);
 		source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);
 		PF_iteration_kernel<<<grids,threads>>>(m_device, m_extent, matdim, source, src_loc, dev_wall, dev_WWall, dev_W, nm_device);
-		/*	__global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
-									double src, dim3 srcloc, float * wallLoc, float * WWall, float * W,
-									cudaPitchedPtr nmPtr)*/
-		//PF_iteration_kernel<<<grids,threads>>>(iter, m_device, m_extent, matdim, source);
 		cudaDeviceSynchronize();
-		status = cudaMemcpy3D(&hm_p);
-		//printf("Source: %f \n", source);
-		
-		
-	}	
+		PF_copymem_kernel<<<grids,threads>>>(m_device, nm_device, m_extent, matdim);
 
-	// copy back
-	//cudaMemcpy3D(m_host, m_device.ptr, MATRIX_DIM*MATRIX_DIM*4*sizeof(float), cudaMemcpyDeviceToHost);
+		cudaDeviceSynchronize();
+		//status = cudaMemcpy3D(&hm_p);
+	}	
+	//long int final=clock()-t1; printf("GPU took %li ticks (%f seconds) \n", final, ((float)final)/CLOCKS_PER_SEC);
 	
 	status = cudaMemcpy3D(&hm_p);
 
-	/*hm_p.srcPtr = m_device;
-	hm_p.dstPtr.ptr = m_host;
-	hm_p.extent = m_extent;
-	hm_p.kind = cudaMemcpyDeviceToHost;
-	status = cudaMemcpy3D(&hm_p);*/
 	if (status != cudaSuccess){printf("Uhoh: %s \n", cudaGetErrorString(status));}
-	/*hm_p.srcPtr.ptr = m_device.ptr;
-	hm_p.srcPtr.pitch = m_device.pitch;
-	hm_p.srcPtr.xsize = m_device.xsize;
-	hm_p.srcPtr.ysize = m_device.ysize;
-	hm_p.dstPtr.ptr = m_host;
-	hm_p.dstPtr.pitch = 
-	hm_p.extent = m_extent;*/ // x, y, z
-	//m_p.kind = cudaMemcpyHostToDevice;
-	//status = cudaMemcpy3D(&m_p); 
-
-	//for (int i = 0; i < MATRIX_DIM; i++)
-	//{
-	//	printf("Row %d: ", i);
-	//	for (int j =0; j < MATRIX_DIM; j++)
-	//	{
-	//		printf("%f ", m_host[j + i * MATRIX_DIM]);
-	//	}
-	//	printf("\n");
-	//}
 
 	// Free all allocated memory (move into separate delete function later)
 	cudaFree(m_device.ptr);
