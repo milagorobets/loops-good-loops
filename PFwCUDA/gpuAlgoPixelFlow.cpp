@@ -28,6 +28,10 @@ double GPU_UNOPTIMIZED::get_M0(int x, int y)
 	{
 		return m_ptr[y*MATRIX_DIM+x]; // z = 0, so doesn't matter right now
 	}
+	else
+	{
+		return 0;
+	}
 }
 
 void GPU_UNOPTIMIZED::setMatrixWallLoc(int x, int y, int val)

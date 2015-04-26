@@ -15,6 +15,12 @@
 
 //__constant__ double src_amplitude = 1.0;
 //__constant__ double src_frequency = 1.0;
+__device__ unsigned int threads_report;
+
+__global__ void PF_copymem_kernel(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExtent mExt, dim3 matdim)
+{
+	
+}
 
 __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
 									double src, dim3 srcloc, bool * wallLoc, float * WWall, float * W,
@@ -22,7 +28,13 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 {
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
-
+	if ((x == 0) && (y == 0)) threads_report = 0;
+		//if (x > MATRIX_DIM)
+		//{
+		//	printf("hello %d %d \n", x, y);
+		//}
+	if ((x < MATRIX_DIM) && (y < MATRIX_DIM))
+	{		
 	//__syncthreads();
 	//if (x == 3){
 	//	printf("hello, y = %d \n", y);
@@ -116,6 +128,10 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 
 	// sync after calculating nms
 	__syncthreads();
+	if ((threadIdx.x == 0) && (threadIdx.y == 0)) atomicAdd(&threads_report, 1);
+	printf("threadsreported %d \n", threads_report);
+	while (threads_report != blockDim.x*blockDim.y){}
+	
 
 	// Copy nm to m
 	//*(float*)(m_addroff) = *(float*)(nm_addroff);										// m0[x][y] = nm0[x][y]
@@ -182,6 +198,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 			m[CI(x, MATRIX_DIM-1, 3, e_per_row, matrix_dimensions.y)] = nm[CI(x, MATRIX_DIM-2, 3, e_per_row, matrix_dimensions.y)];
 		}
 	 }
+	 }
 
 	 /*__syncthreads();
 	 printf("Location %d, %d, m0 = %f \n", x, y, m[CI(x, y, 2, e_per_row, matrix_dimensions.y)]);*/
@@ -247,7 +264,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 #define W_DIMx 4
 #define W_DIMy W_DIMx
 
-#define BLOCK_DIMx ((MATRIX_DIM>32)?32:MATRIX_DIM)
+#define BLOCK_DIMx ((MATRIX_DIM>16)?16:MATRIX_DIM) // vary this
 #define BLOCK_DIMy  BLOCK_DIMx
 #define GRID_DIMx ((MATRIX_DIM + BLOCK_DIMx - 1)/BLOCK_DIMx)
 #define GRID_DIMy ((MATRIX_DIM + BLOCK_DIMy - 1)/BLOCK_DIMy)
@@ -338,25 +355,6 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	if (status != cudaSuccess){printf("W cudaMemcpy: %s \n", cudaGetErrorString(status));}
 	double source = 0;
 
-	cudaDeviceSynchronize();
-	for (int iter = 0; iter < gpu_iterations; iter++)
-	{
-		//cudaMemset3D(m_device, 0, m_extent);
-		//printf("Iteration %d: \n", iter);
-		source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);
-		PF_iteration_kernel<<<grids,threads>>>(m_device, m_extent, matdim, source, src_loc, dev_wall, dev_WWall, dev_W, nm_device);
-		/*	__global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
-									double src, dim3 srcloc, float * wallLoc, float * WWall, float * W,
-									cudaPitchedPtr nmPtr)*/
-		//PF_iteration_kernel<<<grids,threads>>>(iter, m_device, m_extent, matdim, source);
-		cudaDeviceSynchronize();
-		//printf("Source: %f \n", source);
-		
-		
-	}	
-
-	// copy back
-	//cudaMemcpy3D(m_host, m_device.ptr, MATRIX_DIM*MATRIX_DIM*4*sizeof(float), cudaMemcpyDeviceToHost);
 	cudaMemcpy3DParms hm_p = {0};
 	int hx = m_extent.width/sizeof(float);
 	int hy = m_extent.height;
@@ -374,6 +372,28 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	hm_p.extent.height = hy;
 	hm_p.extent.depth = hz;
 	hm_p.kind = cudaMemcpyDeviceToHost;
+
+	cudaDeviceSynchronize();
+	for (int iter = 0; iter < gpu_iterations; iter++)
+	{
+		//cudaMemset3D(m_device, 0, m_extent);
+		//printf("Iteration %d: \n", iter);
+		source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);
+		PF_iteration_kernel<<<grids,threads>>>(m_device, m_extent, matdim, source, src_loc, dev_wall, dev_WWall, dev_W, nm_device);
+		/*	__global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
+									double src, dim3 srcloc, float * wallLoc, float * WWall, float * W,
+									cudaPitchedPtr nmPtr)*/
+		//PF_iteration_kernel<<<grids,threads>>>(iter, m_device, m_extent, matdim, source);
+		cudaDeviceSynchronize();
+		status = cudaMemcpy3D(&hm_p);
+		//printf("Source: %f \n", source);
+		
+		
+	}	
+
+	// copy back
+	//cudaMemcpy3D(m_host, m_device.ptr, MATRIX_DIM*MATRIX_DIM*4*sizeof(float), cudaMemcpyDeviceToHost);
+	
 	status = cudaMemcpy3D(&hm_p);
 
 	/*hm_p.srcPtr = m_device;

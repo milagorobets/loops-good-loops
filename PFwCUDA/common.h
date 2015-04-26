@@ -3,10 +3,10 @@
 
 //---- NETWORK PARAMETERS:
 #define NUM_WALL_BLOCKS 5	// Number of wall blocks (used in the RNG version)
-#define MATRIX_DIM 5	// Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
+#define MATRIX_DIM 16	// Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
 
 //---- SIMULATION PARAMETERS:
-#define NUM_CPU_R 5		// Number of iterations
+#define NUM_CPU_R 1	// Number of iterations
 
 // choose mode:
 // CPU_UNOPTIMIZED: first implementation, uses new/delete to allocate memory
@@ -21,7 +21,7 @@
 #define TEST_CLASS GPU_UNOPTIMIZED 
 #define REFERENCE_CLASS CPU_REFERENCE // Don't change this?
 
-#define CHECK_OUTPUT 0			// Compare output to known working version to make sure it is still correct
+#define CHECK_OUTPUT 1			// Compare output to known working version to make sure it is still correct
 #define CHECK_TOLERANCE 0.000001	// Tolerance for comparing floats
 
 //---- SETUP PARAMETERS (don't touch unless you know why):
