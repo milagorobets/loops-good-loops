@@ -74,8 +74,9 @@ __global__ void PF_copymem_kernel(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cud
 	}
 }
 
-__global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_dimensions, 
-									double src, dim3 srcloc, bool * wallLoc, float * WWall, float * W,
+__global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, 
+									dim3 matrix_dimensions, double src, dim3 srcloc, 
+									bool * wallLoc, float * WWall, float * W,
 									cudaPitchedPtr nmPtr)
 {
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -92,6 +93,7 @@ __global__ void PF_iteration_kernel(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 m
 	//	printf("hello, y = %d \n", y);
 	//}
 	//printf("Hello from thread %d, %d \n", x, y);
+
 
 	//// Find location within the pitched memory
 	float *m = (float*)mPtr.ptr;
@@ -262,18 +264,18 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	hm_p.kind = cudaMemcpyDeviceToHost;
 
 	cudaDeviceSynchronize();
-	//clock_t t1; t1=clock();
+	clock_t t2; t2=clock();
 	for (int iter = 0; iter < gpu_iterations; iter++)
 	{
 		source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);
-		PF_iteration_kernel<<<grids,threads>>>(m_device, m_extent, matdim, source, src_loc, dev_wall, dev_WWall, dev_W, nm_device);
+		PF_iteration_kernel<<<grids,threads>>>(m_device, m_extent, matdim, source,
+							src_loc, dev_wall, dev_WWall, dev_W, nm_device);
 		cudaDeviceSynchronize();
 		PF_copymem_kernel<<<grids,threads>>>(m_device, nm_device, m_extent, matdim);
-
 		cudaDeviceSynchronize();
-		//status = cudaMemcpy3D(&hm_p);
+		status = cudaMemcpy3D(&hm_p);
 	}	
-	//long int final=clock()-t1; printf("GPU took %li ticks (%f seconds) \n", final, ((float)final)/CLOCKS_PER_SEC);
+	long int final=clock()-t2; printf("GPU iterations took %li ticks (%f seconds) \n", final, ((float)final)/CLOCKS_PER_SEC);
 	
 	status = cudaMemcpy3D(&hm_p);
 
@@ -287,7 +289,7 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	cudaFree(dev_W);
 }
 
-void cPFinit(double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[])
+void cPFinit(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[])
 {
 	// Initialize some values
 	coef = 1;
@@ -325,26 +327,4 @@ void cPFdelete(void)
 	/*if (host_WWall != NULL) */free(host_WWall);
 	/*if (host_Wall != NULL) */free(host_Wall);
 	free(m_host);
-}
-
-__global__ void testKernel(int a, int b, int *c)
-{
-	*c = a+b;
-	int i = threadIdx.x;
-	printf("hello from thread %d \n", i);
-}
-
-void callerblahblah(void)
-{
-	int c;
-	int *dev_c;
-	int dev;
-	//HANDLE_ERROR(cudaMalloc((void**)&dev_c, sizeof(int)));
-	cudaMalloc((void**)&dev_c, sizeof(int));
-	testKernel<<<1,1>>>(2,7,dev_c);
-	cudaMemcpy(&c, dev_c, sizeof(int), cudaMemcpyDeviceToHost);
-	printf("2+7 = %d \n",c);
-	cudaFree(dev_c);
-
-	//PF_iteration_kernel<<<1,1>>>();
 }

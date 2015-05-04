@@ -3,10 +3,10 @@
 
 //---- NETWORK PARAMETERS:
 #define NUM_WALL_BLOCKS 5	// Number of wall blocks (used in the RNG version)
-#define MATRIX_DIM 5500	// Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
+#define MATRIX_DIM 500	// Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
 
 //---- SIMULATION PARAMETERS:
-#define NUM_CPU_R 100	// Number of iterations
+#define NUM_CPU_R 1000 // Number of iterations
 
 // choose mode:
 // CPU_UNOPTIMIZED: first implementation, uses new/delete to allocate memory
@@ -18,22 +18,23 @@
 // GPU_UNOPTIMIZED: code stupidly thrown at the GPU
 // GPU_DUAL_BUFFER: double-buffer computation and memory transfer for the GPU
 
-#define TEST_CLASS GPU_UNOPTIMIZED 
+#define TEST_CLASS GPU_PTR 
 #define REFERENCE_CLASS CPU_REFERENCE // Don't change this?
 
-#define CHECK_OUTPUT 1			// Compare output to known working version to make sure it is still correct
+#define CHECK_OUTPUT 0			// Compare output to known working version to make sure it is still correct
 #define CHECK_TOLERANCE 0.000001	// Tolerance for comparing floats
 
 //---- SETUP PARAMETERS (don't touch unless you know why):
 #define PI 3.141592653589	// For god's sake, don't change Pi
 
-#define WALL_MEMORY MEM_HEAP // Determines where to put the wall matrix
+#define WALL_MEMORY MEM_MAP // Determines where to put the wall matrix
 #define MEM_STACK 1			// Stack (doesn't work for large matrices)
 #define MEM_MAP 0			// Map because it's so sparse (slower than stack)
 #define MEM_HEAP 2			// Put it on the heap!
 
 #if (WALL_MEMORY == MEM_STACK)
-#warning("Remember to increase the stack allocation!")
+//#warning("Remember to increase the stack allocation!")
 #endif
 
 #endif /* COMMON_H_ */
+

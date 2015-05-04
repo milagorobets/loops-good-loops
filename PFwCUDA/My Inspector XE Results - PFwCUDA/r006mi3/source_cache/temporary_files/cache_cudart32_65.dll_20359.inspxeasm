@@ -1,0 +1,23 @@
+131888	push ebp
+131889	mov ebp, esp
+131891	cmp dword ptr [0x10034790], 0x0
+131898	jnz 0x20340
+131900	xor eax, eax
+131902	pop ebp
+131903	ret 
+131904	push esi
+131905	push 0x10034794
+131910	call dword ptr [0x1002a030]
+131916	mov eax, dword ptr [ebp+0x8]
+131919	mov ecx, dword ptr [0x10034790]
+131925	push eax
+131926	push 0x1
+131928	push ecx
+131929	call dword ptr [0x1002a058]
+131935	push 0x10034794
+131940	mov esi, eax
+131942	call dword ptr [0x1002a038]
+131948	mov eax, esi
+131950	pop esi
+131951	pop ebp
+131952	ret 

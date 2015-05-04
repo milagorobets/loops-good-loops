@@ -1,0 +1,15 @@
+-r
+D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Advisor XE Results - PFwCUDA\e000\hs000
+-type
+cpu:stack
+--data-limit-mb=100
+--stack-stitching
+--follow-child
+--stackwalk=offline
+--mrte-mode=auto
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest\Release
+--search-dir
+sym=D:\Mila\CPUGPUSTUFF\smalltest
+--
+D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe

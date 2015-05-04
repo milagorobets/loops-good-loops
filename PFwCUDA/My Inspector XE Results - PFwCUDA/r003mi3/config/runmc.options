@@ -1,0 +1,20 @@
+-r
+D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r003mi3
+--check-invalid-access
+--analyze-stack
+--leak-maximum=100000
+--leak-check-on-exit
+--leak-check-on-demand
+--check-uninit-read
+--advanced-uninit-read
+--check-resource-leaks
+--leak-check-report-reachable
+--freelist-vol=1000000
+--guard-zone-size=32
+--stack-depth=32
+--no-close-console
+--mrte-mode=auto
+--heartbeat=1
+--enable-memory-growth
+--
+D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe

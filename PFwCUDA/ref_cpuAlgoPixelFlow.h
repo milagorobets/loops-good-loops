@@ -15,21 +15,21 @@ class CPU_REFERENCE
 private:
 	void cpuAlgoPixelFlow_nextStep(void);
 	void cpuAlgoPixelFlow_updateSource(int t);
-	double f[4];
-	double source;
-	double sourceLoc[2];
-	double src_amplitude, src_frequency;
+	float f[4];
+	float source;
+	float sourceLoc[2];
+	float src_amplitude, src_frequency;
 	int coef;
 	int entries;
 
 	int WWAL_LENGTH ;
 	int W_LENGTH;
 
-	double ** m0, ** nm0; 
-	double ** m1, ** nm1;
-	double ** m2, ** nm2;
-	double ** m3, ** nm3;
-	double ** W, ** WWall;
+	float ** m0, ** nm0; 
+	float ** m1, ** nm1;
+	float ** m2, ** nm2;
+	float ** m3, ** nm3;
+	float ** W, ** WWall;
 
 #if (WALL_MEMORY==MEM_STACK)
 	bool matrixWallLoc[MATRIX_DIM][MATRIX_DIM];
@@ -43,7 +43,7 @@ private:
 
 public:
 	CPU_REFERENCE(); // default constructor
-	void cpuAlgoPixelFlow_init(double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[]);
+	void cpuAlgoPixelFlow_init(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[]);
 	void cpuAlgoPixelFlow(unsigned int num_iterations);
 	void cpuAlgoPixelFlow_delete();
 	double get_M0(int x, int y);

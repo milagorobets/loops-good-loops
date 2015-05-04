@@ -1,0 +1,50 @@
+
+=== Start: [2015/04/28 14:46:15] === 
+Analysis started...
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r004mi1\r004mi1.inspxe 
+Analysis started for D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe (pid = 4732) 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe, address range [0x00A90000-0x069FEFFF] 
+Loaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll, address range [0x56000000-0x5616BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x74940000-0x7494BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74950000-0x749AFFFF] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x75620000-0x7567FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75680000-0x7576FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75940000-0x75A4FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x75A50000-0x75A96FFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75AA0000-0x75B9FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x75BB0000-0x75C3FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x76210000-0x762ACFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x76520000-0x765EBFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x76600000-0x766ABFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x768B0000-0x7694FFFF], minimal analysis 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76AE0000-0x76AF8FFF] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x76F10000-0x76F19FFF] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x76F40000-0x770BFFFF], minimal analysis 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\cudart32_65.dll, address range [0x0FF80000-0x0FFC0FFF] 
+Loaded module: C:\Windows\system32\MSVCP100.dll, address range [0x74200000-0x74268FFF] 
+Loaded module: C:\Windows\system32\MSVCR100.dll, address range [0x74140000-0x741FEFFF] 
+Loaded module: C:\Windows\system32\nvcuda.dll, address range [0x0D750000-0x0E19BFFF] 
+Loaded module: C:\Windows\syswow64\SETUPAPI.dll, address range [0x762B0000-0x7644CFFF] 
+Loaded module: C:\Windows\syswow64\CFGMGR32.dll, address range [0x76950000-0x76976FFF] 
+Loaded module: C:\Windows\syswow64\OLEAUT32.dll, address range [0x75F30000-0x75FBEFFF] 
+Loaded module: C:\Windows\syswow64\ole32.dll, address range [0x76980000-0x76ADBFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\DEVOBJ.dll, address range [0x75E20000-0x75E31FFF] 
+Loaded module: C:\Windows\system32\VERSION.dll, address range [0x74870000-0x74878FFF] 
+Loaded module: C:\Windows\syswow64\SHELL32.dll, address range [0x749D0000-0x7561AFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\SHLWAPI.dll, address range [0x761B0000-0x76206FFF] 
+Loaded module: C:\Windows\syswow64\WS2_32.dll, address range [0x76170000-0x761A4FFF] 
+Loaded module: C:\Windows\syswow64\NSI.dll, address range [0x75E00000-0x75E05FFF] 
+Loaded module: C:\Windows\system32\dwmapi.dll, address range [0x70C50000-0x70C62FFF], minimal analysis 
+Unloaded module: C:\Windows\system32\dwmapi.dll 
+Loaded module: C:\Windows\system32\gdi32.dll, address range [0x0A400000-0x0A48FFFF], minimal analysis 
+Unloaded module: C:\Windows\system32\gdi32.dll 
+Loaded module: C:\Windows\system32\nvapi.dll, address range [0x0F9D0000-0x0FCB7FFF] 
+Loaded module: C:\Windows\system32\gdi32.dll, address range [0x0A400000-0x0A48FFFF], minimal analysis 
+Unloaded module: C:\Windows\system32\gdi32.dll 
+Loaded module: C:\Windows\syswow64\WINTRUST.dll, address range [0x76B10000-0x76B3EFFF] 
+Loaded module: C:\Windows\syswow64\CRYPT32.dll, address range [0x75C40000-0x75D60FFF] 
+Loaded module: C:\Windows\syswow64\MSASN1.dll, address range [0x75DD0000-0x75DDBFFF] 
+Application exit code: -529697949 
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r004mi1\r004mi1.inspxe 
+Analysis completed
+=== End: [2015/04/28 14:46:30] === 

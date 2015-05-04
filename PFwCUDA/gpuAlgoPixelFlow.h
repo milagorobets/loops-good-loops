@@ -8,10 +8,10 @@ class GPU_UNOPTIMIZED
 private:
 	void cpuAlgoPixelFlow_nextStep(void);
 	void cpuAlgoPixelFlow_updateSource(int t);
-	double f[4];
-	double source;
-	double sourceLoc[2];
-	double src_amplitude, src_frequency;
+	float f[4];
+	float source;
+	float sourceLoc[2];
+	float src_amplitude, src_frequency;
 	int coef;
 	int entries;
 
@@ -22,7 +22,7 @@ private:
 
 public:
 	GPU_UNOPTIMIZED(); // default constructor
-	void cpuAlgoPixelFlow_init(double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[]);
+	void cpuAlgoPixelFlow_init(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[]);
 	void cpuAlgoPixelFlow(unsigned int num_iterations);
 	void cpuAlgoPixelFlow_delete();
 	double get_M0(int x, int y);

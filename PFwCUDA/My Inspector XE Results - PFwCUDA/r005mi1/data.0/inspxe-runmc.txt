@@ -1,0 +1,29 @@
+
+=== Start: [2015/04/28 14:52:02] === 
+Analysis started...
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r005mi1\r005mi1.inspxe 
+Analysis started for D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe (pid = 1660) 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe, address range [0x00DD0000-0x06D3CFFF] 
+Loaded module: C:\Program Files (x86)\Intel\Inspector XE 2015\bin32\ccrt12.dll, address range [0x56000000-0x5616BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\CRYPTBASE.dll, address range [0x74940000-0x7494BFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\SspiCli.dll, address range [0x74950000-0x749AFFFF] 
+Loaded module: C:\Windows\system32\IMM32.DLL, address range [0x75620000-0x7567FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\RPCRT4.dll, address range [0x75680000-0x7576FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\kernel32.dll, address range [0x75940000-0x75A4FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\KERNELBASE.dll, address range [0x75A50000-0x75A96FFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\USER32.dll, address range [0x75AA0000-0x75B9FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\GDI32.dll, address range [0x75BB0000-0x75C3FFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\USP10.dll, address range [0x76210000-0x762ACFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\MSCTF.dll, address range [0x76520000-0x765EBFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\msvcrt.dll, address range [0x76600000-0x766ABFFF], minimal analysis 
+Loaded module: C:\Windows\syswow64\ADVAPI32.dll, address range [0x768B0000-0x7694FFFF], minimal analysis 
+Loaded module: C:\Windows\SysWOW64\sechost.dll, address range [0x76AE0000-0x76AF8FFF] 
+Loaded module: C:\Windows\syswow64\LPK.dll, address range [0x76F10000-0x76F19FFF] 
+Loaded module: C:\Windows\SysWOW64\ntdll.dll, address range [0x76F40000-0x770BFFFF], minimal analysis 
+Loaded module: D:\Mila\CPUGPUSTUFF\smalltest\Release\cudart32_65.dll, address range [0x0F370000-0x0F3B0FFF] 
+Loaded module: C:\Windows\system32\MSVCP100.dll, address range [0x74200000-0x74268FFF] 
+Loaded module: C:\Windows\system32\MSVCR100.dll, address range [0x74140000-0x741FEFFF] 
+Application exit code: 1 
+Result file: D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\My Inspector XE Results - PFwCUDA\r005mi1\r005mi1.inspxe 
+Analysis canceled by user
+=== End: [2015/04/28 14:52:16] === 

@@ -28,7 +28,7 @@ void CPU_REFERENCE::setMatrixWallLoc(int x, int y, int val)
 	#endif
 }
 
-void CPU_REFERENCE::cpuAlgoPixelFlow_init(double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[])
+void CPU_REFERENCE::cpuAlgoPixelFlow_init(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[])
 {
 	// Initialize some values
 	coef = 1;
@@ -53,42 +53,42 @@ void CPU_REFERENCE::cpuAlgoPixelFlow_init(double matrixFlow[][4], double matrixW
 	}
 	#endif
 
-	m0 = new double * [MATRIX_DIM];
-	m1 = new double * [MATRIX_DIM];
-	m2 = new double * [MATRIX_DIM];
-	m3 = new double * [MATRIX_DIM];
+	m0 = new float * [MATRIX_DIM];
+	m1 = new float * [MATRIX_DIM];
+	m2 = new float * [MATRIX_DIM];
+	m3 = new float * [MATRIX_DIM];
 
-	nm0 = new double * [MATRIX_DIM];
-	nm1 = new double * [MATRIX_DIM];
-	nm2 = new double * [MATRIX_DIM];
-	nm3 = new double * [MATRIX_DIM];
+	nm0 = new float * [MATRIX_DIM];
+	nm1 = new float * [MATRIX_DIM];
+	nm2 = new float * [MATRIX_DIM];
+	nm3 = new float * [MATRIX_DIM];
 
-	W = new double * [4];
-	WWall = new double * [4];
+	W = new float * [4];
+	WWall = new float * [4];
 
 	for (int i = 0; i < MATRIX_DIM; ++i)
 	{
-		m0[i] = new double [MATRIX_DIM];
+		m0[i] = new float [MATRIX_DIM];
 		memset(m0[i], 0, MATRIX_DIM*(sizeof *m0[i]));
-		m1[i] = new double [MATRIX_DIM];
+		m1[i] = new float [MATRIX_DIM];
 		memset(m1[i], 0, MATRIX_DIM*(sizeof *m1[i]));
-		m2[i] = new double [MATRIX_DIM];
+		m2[i] = new float [MATRIX_DIM];
 		memset(m2[i], 0, MATRIX_DIM*(sizeof *m2[i]));
-		m3[i] = new double [MATRIX_DIM];
+		m3[i] = new float [MATRIX_DIM];
 		memset(m3[i], 0, MATRIX_DIM*(sizeof *m3[i]));
-		nm0[i] = new double [MATRIX_DIM];
+		nm0[i] = new float [MATRIX_DIM];
 		memset(nm0[i], 0, MATRIX_DIM*(sizeof *nm0[i]));
-		nm1[i] = new double [MATRIX_DIM];
+		nm1[i] = new float [MATRIX_DIM];
 		memset(nm1[i], 0, MATRIX_DIM*(sizeof *nm1[i]));
-		nm2[i] = new double [MATRIX_DIM];
+		nm2[i] = new float [MATRIX_DIM];
 		memset(nm2[i], 0, MATRIX_DIM*(sizeof *nm2[i]));
-		nm3[i] = new double [MATRIX_DIM];
+		nm3[i] = new float [MATRIX_DIM];
 		memset(nm3[i], 0, MATRIX_DIM*(sizeof *nm3[i]));
 	}
 	for (int i = 0; i < 4; ++i)
 	{
-		W[i] = new double [4];
-		WWall[i] = new double [4];
+		W[i] = new float [4];
+		WWall[i] = new float [4];
 		memset(W[i], 0, 4*(sizeof *W[i]));
 		memset(WWall[i], 0, 4*(sizeof *WWall[i]));
 	}
@@ -170,8 +170,8 @@ void CPU_REFERENCE::cpuAlgoPixelFlow_updateSource(int t)
 
 void CPU_REFERENCE::cpuAlgoPixelFlow_nextStep(void)
 {
-	double f0 = 0, f1 = 0, f2 = 0, f3 = 0;
-	double newF[4];
+	float f0 = 0, f1 = 0, f2 = 0, f3 = 0;
+	float newF[4];
 	bool isWall;
 	for (int x = 0; x < MATRIX_DIM; x++)
 	{

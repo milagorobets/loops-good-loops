@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="d:\mila\cpugpustuff\smalltest\pfwcuda\cpualgopixelflow.cpp" md5="158baa1103b5318cac05015bd7d50aef">
+    <snippet line="17">
+      <line line="14">// default constructor</line>
+      <line line="15">CPU_UNOPTIMIZED::CPU_UNOPTIMIZED()</line>
+      <line line="16">{</line>
+      <line line="17">    /*cpuAlgoPixelFlow_init();*/</line>
+      <line line="18">}</line>
+    </snippet>
+  </file>
+</snippets>

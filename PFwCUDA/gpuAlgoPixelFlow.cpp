@@ -39,7 +39,7 @@ void GPU_UNOPTIMIZED::setMatrixWallLoc(int x, int y, int val)
 	cPFaddWallLocation(x,y,val);
 }
 
-void GPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(double matrixFlow[][4], double matrixWall[][4], double in_sourceLoc[])
+void GPU_UNOPTIMIZED::cpuAlgoPixelFlow_init(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[])
 {
 	cPFinit(matrixFlow, matrixWall, in_sourceLoc);
 }

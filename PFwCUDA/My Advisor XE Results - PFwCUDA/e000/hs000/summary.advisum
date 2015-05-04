@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- <!DOCTYPE IntelParallelAdvisorSummaryCollection SYSTEM  "IntelParallelAdvisorSummaryCollection.dtd"> -->
+
+<IntelParallelAdvisorSummary version="" 
+                             kind="DATAKIND_SURVEY" >
+  <hotspot filename="D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\ref_cpuAlgoPixelFlow.cpp"
+           line_no="242"
+           routine="CPU_REFERENCE::cpuAlgoPixelFlow_nextStep"
+           cpu_time="3.236229E-001"
+           priority="1"
+           id="3"/>
+  <hotspot filename="D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\ref_cpuAlgoPixelFlow.cpp"
+           line_no="240"
+           routine="CPU_REFERENCE::cpuAlgoPixelFlow_nextStep"
+           cpu_time="3.236229E-001"
+           priority="2"
+           id="2"/>
+  <hotspot filename="D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\ref_cpuAlgoPixelFlow.cpp"
+           line_no="178"
+           routine="CPU_REFERENCE::cpuAlgoPixelFlow_nextStep"
+           cpu_time="3.859577E-001"
+           priority="3"
+           id="5"/>
+  <hotspot filename="D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\ref_cpuAlgoPixelFlow.cpp"
+           line_no="176"
+           routine="CPU_REFERENCE::cpuAlgoPixelFlow_nextStep"
+           cpu_time="3.859577E-001"
+           priority="4"
+           id="4"/>
+  <hotspot filename="D:\Mila\CPUGPUSTUFF\smalltest\PFwCUDA\ref_cpuAlgoPixelFlow.cpp"
+           line_no="159"
+           routine="CPU_REFERENCE::cpuAlgoPixelFlow"
+           cpu_time="7.095806E-001"
+           priority="5"
+           id="1"/>
+</IntelParallelAdvisorSummary >

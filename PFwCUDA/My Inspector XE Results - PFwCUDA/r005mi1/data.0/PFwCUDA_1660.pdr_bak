@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<diags major="2" minor="0">
+
+<diag id="1">
+	<type>233</type>
+	<message>
+		<timestamp>87273772</timestamp>
+		<thread>
+			<thrname></thrname>
+			<threadid>9012</threadid>
+			<stackstamp>87300198</stackstamp>
+			<stacktrace>
+			<loc>
+			<mod>D:\Mila\CPUGPUSTUFF\smalltest\Release\PFwCUDA.exe</mod>
+			<rva>0x4338</rva>
+			</loc>
+			</stacktrace>
+		</thread>
+	</message>
+</diag>

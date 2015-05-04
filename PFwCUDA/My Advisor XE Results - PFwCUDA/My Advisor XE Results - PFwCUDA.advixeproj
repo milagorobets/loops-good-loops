@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+ <connectionOption>localhost</connectionOption>
+ <rdmgr>
+  <timestamp type="u64_t">1430154487</timestamp>
+  <hostname>ICT520A-703432.uc.ucalgary.ca</hostname>
+  <os>windows</os>
+  <product>Intel® Advisor XE 2015 Update 1</product>
+  <buildNumber type="s32_t">380555</buildNumber>
+  <logicalCPUCount type="s32_t">4</logicalCPUCount>
+  <CPUFrequency type="s64_t">3200000000</CPUFrequency>
+ </rdmgr>
+ <contextValues type="bag"/>
+</root>

@@ -7,6 +7,9 @@
     <CudaCompile Include="cPFkernel.cu">
       <Filter>src</Filter>
     </CudaCompile>
+    <CudaCompile Include="cPFkernel_ptr.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -41,6 +44,12 @@
     <ClInclude Include="gpuAlgoPixelFlow.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="cPFkernel_ptr.cuh">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="gpuPF_ptr.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpuAlgoPixelFlow.cpp">
@@ -62,6 +71,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="ref_cpuAlgoPixelFlow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="gpuPF_ptr.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<snippets>
+  <file name="d:\mila\cpugpustuff\smalltest\pfwcuda\cpfkernel.cu" md5="">
+    <snippet line="212">
+      <line line="209">    cudaExtent m_extent = make_cudaExtent(sizeof(float)*matdim.x, matdim.y, matdim.z); // width, height, depth</line>
+      <line line="210">    cudaPitchedPtr m_device;</line>
+      <line line="211">    cudaMalloc3D(&amp;m_device, m_extent);</line>
+      <line line="212"/>
+      <line line="213">    m_host = (float *)malloc(sizeof(float)*MATRIX_DIM*MATRIX_DIM*4); // need to initialize this somehow</line>
+    </snippet>
+  </file>
+</snippets>
