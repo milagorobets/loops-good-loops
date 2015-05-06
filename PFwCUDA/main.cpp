@@ -75,11 +75,11 @@ int main(void)
 	TEST_CLASS cpu_test;
 	cpu_test.cpuAlgoPixelFlow_init(matrixFlow, matrixWall, t_sourceLoc);
 
-	cpu_test.setMatrixWallLoc(0,0,1);
-	cpu_test.setMatrixWallLoc(0,1,1);
-	cpu_test.setMatrixWallLoc(0,2,1);
-	cpu_test.setMatrixWallLoc(0,3,1);
-	cpu_test.setMatrixWallLoc(0,4,1);
+	//cpu_test.setMatrixWallLoc(0,0,1);
+	//cpu_test.setMatrixWallLoc(0,1,1);
+	//cpu_test.setMatrixWallLoc(0,2,1);
+	//cpu_test.setMatrixWallLoc(0,3,1);
+	//cpu_test.setMatrixWallLoc(0,4,1);
 
 	CPU_START;
 	cpu_test.cpuAlgoPixelFlow(NUM_CPU_R);
@@ -96,11 +96,11 @@ int main(void)
 	t_sourceLoc[1] = position_sourceY;
 	REFERENCE_CLASS cpu_ref;
 	cpu_ref.cpuAlgoPixelFlow_init(matrixFlow, matrixWall, t_sourceLoc);
-	cpu_ref.setMatrixWallLoc(0,0,1);
-	cpu_ref.setMatrixWallLoc(0,1,1);
-	cpu_ref.setMatrixWallLoc(0,2,1);
-	cpu_ref.setMatrixWallLoc(0,3,1);
-	cpu_ref.setMatrixWallLoc(0,4,1);
+	//cpu_ref.setMatrixWallLoc(0,0,1);
+	//cpu_ref.setMatrixWallLoc(0,1,1);
+	//cpu_ref.setMatrixWallLoc(0,2,1);
+	//cpu_ref.setMatrixWallLoc(0,3,1);
+	//cpu_ref.setMatrixWallLoc(0,4,1);
 
 	long int t2 = clock();
 	cpu_ref.cpuAlgoPixelFlow(NUM_CPU_R);

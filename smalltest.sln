@@ -11,6 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fluidsGL", "C:\ProgramData\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PFwCUDA", "PFwCUDA\PFwCUDA.vcxproj", "{F76C476B-541B-4E2F-8C6D-ABB8076C6D28}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleTexture", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\0_Simple\simpleTexture\simpleTexture_vs2010.vcxproj", "{5E1F248E-AC90-4F26-AC59-04CF9083B896}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boxFilter", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\3_Imaging\boxFilter\boxFilter_vs2010.vcxproj", "{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -75,6 +79,26 @@ Global
 		{F76C476B-541B-4E2F-8C6D-ABB8076C6D28}.Release|Win32.Build.0 = Release|Win32
 		{F76C476B-541B-4E2F-8C6D-ABB8076C6D28}.Release|x64.ActiveCfg = Release|x64
 		{F76C476B-541B-4E2F-8C6D-ABB8076C6D28}.Release|x64.Build.0 = Release|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Debug|Win32.ActiveCfg = Debug|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Debug|x64.ActiveCfg = Debug|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Debug|x64.Build.0 = Debug|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Release|Mixed Platforms.Build.0 = Release|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Release|Win32.ActiveCfg = Release|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Release|x64.ActiveCfg = Release|x64
+		{5E1F248E-AC90-4F26-AC59-04CF9083B896}.Release|x64.Build.0 = Release|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Debug|Win32.ActiveCfg = Debug|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Debug|x64.ActiveCfg = Debug|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Debug|x64.Build.0 = Debug|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|Mixed Platforms.Build.0 = Release|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|Win32.ActiveCfg = Release|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|x64.ActiveCfg = Release|x64
+		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

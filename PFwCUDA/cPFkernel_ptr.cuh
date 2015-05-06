@@ -8,6 +8,9 @@ __global__ void PF_ptr_flow(cudaPitchedPtr mPtr, cudaExtent mExt, dim3 matrix_di
 									cudaPitchedPtr nmPtr);
 __global__ void PF_ptr_copy(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExtent mExt, dim3 matdim);
 __global__ void PF_setup_globals(size_t ptrpitch, cudaExtent mExt, dim3 matdim);
+__global__ void PF_texture_flow(dim3 srcloc, float src, bool* wallLoc, float* nm0, float* nm1, float* nm2, float* nm3, dim3 matdim, float* WWall, float *W);
+__global__ void PF_padded_texture_flow(dim3 srcloc, float src, bool* wallLoc, float*nm0, float*nm1, float* nm2, float* nm3, dim3 matdim, float * WWall, float *W);
+__global__ void PF_padded_texture_copy(float*m0, float*m1, float*m2, float*m3, dim3 matdim);
 void cPFcaller(unsigned int num_iterations, float * &m_ptr);
 void cPFaddWallLocation(int x, int y, bool val);
 void cPFdelete(void);

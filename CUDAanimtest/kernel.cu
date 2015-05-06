@@ -13,40 +13,138 @@
  * 
  */
 
+#include "cuda.h"
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+#include <iostream>
+#include <iomanip>
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <cuda_runtime_api.h>
+#include <cassert>
+#include <cmath>
 
-#include "common/book.h"
-#include "common/gpu_anim.h"
+#define DIM 5
+#define THREADx 16
+#define THREADy 16
+#define BLOCK_DIMx ((DIM>THREADx)?THREADx:DIM) // vary this
+#define BLOCK_DIMy ((DIM>THREADy)?THREADy:DIM)
+#define GRID_DIMx ((DIM + BLOCK_DIMx - 1)/BLOCK_DIMx)
+#define GRID_DIMy ((DIM + BLOCK_DIMy - 1)/BLOCK_DIMy)
 
-#define DIM 1024
+#define checkCudaErrors(val) check( (val), #val, __FILE__, __LINE__)
 
-__global__ void kernel( uchar4 *ptr, int ticks ) {
-    // map from threadIdx/BlockIdx to pixel position
-    int x = threadIdx.x + blockIdx.x * blockDim.x;
-    int y = threadIdx.y + blockIdx.y * blockDim.y;
-    int offset = x + y * blockDim.x * gridDim.x;
-
-    // now calculate the value at that position
-    float fx = x - DIM/2;
-    float fy = y - DIM/2;
-    float d = sqrtf( fx * fx + fy * fy );
-    unsigned char grey = (unsigned char)(128.0f + 127.0f *
-                                         cos(d/10.0f - ticks/7.0f) /
-                                         (d/10.0f + 1.0f));    
-    ptr[offset].x = grey;
-    ptr[offset].y = grey;
-    ptr[offset].z = grey;
-    ptr[offset].w = 255;
+template<typename T>
+void check(T err, const char* const func, const char* const file, const int line) {
+  if (err != cudaSuccess) {
+    std::cerr << "CUDA error at: " << file << ":" << line << std::endl;
+    std::cerr << cudaGetErrorString(err) << " " << func << std::endl;
+    exit(1);
+  }
 }
 
-void generate_frame( uchar4 *pixels, void*, int ticks ) {
-    dim3    grids(DIM/16,DIM/16);
-    dim3    threads(16,16);
-    kernel<<<grids,threads>>>( pixels, ticks );
+texture<float, 2, cudaReadModeElementType> tex;
+float * dev_mat;
+float * host_mat;
+
+__global__ void testTextures(void)
+{
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	//int loc = x + y * DIM;
+
+	if ((x < DIM) && (y < DIM))
+	{
+		printf("Thread %d, %d reporting %f \n", x, y, (float)(tex2D(tex, (float)(x)+0.5f, (float)(y)+0.5f)));
+	}
+
 }
 
-int main( void ) {
-    GPUAnimBitmap  bitmap( DIM, DIM, NULL );
+__global__ void testTexturesLoop(void)
+{
+	for (int x = 0; x < DIM; x++)
+	{
+		for (int y = 0; y < DIM; y++)
+		{
+			printf("Texture location %d, %d reporting %f \n", x, y, (float)(tex2D(tex, (float)(x)+0.5f, (float)(y)+0.5f)));
+		}
+	}
+}
+__global__ void testTexturesLoop2(void)
+{
+	for (int x = 0; x < DIM; x++)
+	{
+		for (int y = 0; y < DIM; y++)
+		{
+			printf("%f, ",(float)(tex2D(tex, (float)(x)+0.5f, (float)(y)+0.5f)));
+		}
+		printf("\n");
+	}
+}
 
-    bitmap.anim_and_exit(
-        (void (*)(uchar4*,void*,int))generate_frame, NULL );
+__global__ void testDeviceMem(float* dev, size_t pitch)
+{
+		for (int x = 0; x < DIM; x++)
+	{
+		for (int y = 0; y < DIM; y++)
+		{
+			printf("%d, %d: Value was: %f ", x, y, dev[x+y*pitch/sizeof(float)]);
+			/*dev[x+y*pitch/sizeof(float)] = ((float)(y + x * DIM+5))/(float)(100);*/
+			dev[x+y*pitch/sizeof(float)] = 0.5f*0.5f;
+			printf(", now is %f", dev[x+y*pitch/sizeof(float)]);
+			printf(", texture %f\n", (float)(tex2D(tex, (float)(x)+0.5f, (float)(y)+0.5f)));
+		}
+	}
+}
+
+int main(void)
+{
+	dim3 threads(BLOCK_DIMx,BLOCK_DIMy,1);
+	dim3 grids(GRID_DIMx,GRID_DIMy,1);
+
+	size_t pitch;
+	size_t host_size = DIM * DIM * sizeof(float);
+	checkCudaErrors(cudaMallocPitch((void**)&dev_mat, &pitch, DIM*sizeof(float), DIM));
+	checkCudaErrors(cudaMallocHost((void**)&host_mat, host_size,cudaHostAllocDefault));
+
+	for (int y = 0; y < DIM; y++)
+	{
+		for (int x = 0; x < DIM; x++)
+		{
+			host_mat[x+y*DIM] = x + y*DIM; // populate with some values
+			printf("Host: x = %d, y = %d, value = %f \n", x, y, host_mat[x+y*DIM]);
+		}
+	}
+
+	//checkCudaErrors(cudaMemcpy(dev_mat, host_mat, DIM*DIM*sizeof(float), cudaMemcpyHostToDevice));
+	checkCudaErrors(cudaMemcpy2D(dev_mat, pitch, host_mat, DIM*sizeof(float), DIM*sizeof(float), DIM, cudaMemcpyHostToDevice));
+
+	cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>(); 
+
+	tex.normalized = false;	tex.filterMode = cudaFilterModeLinear;
+	checkCudaErrors(cudaBindTexture2D(NULL, tex, dev_mat, desc, DIM, DIM, pitch));
+	
+	checkCudaErrors(cudaDeviceSynchronize());
+	float source = 66.0f;
+	//float * ptrsrcloc = &dev_mat[3 + 3*DIM];
+	float *ptrsrcloc = dev_mat + 3 * pitch/sizeof(float) + 3;
+	checkCudaErrors(cudaMemcpy(ptrsrcloc, &source, sizeof(float), cudaMemcpyHostToDevice));
+	//checkCudaErrors(cudaMemcpy2D(ptrsrcloc, sizeof(float), &source, sizeof(float), 
+	////testTextures<<<threads,grids>>>();
+	//testTexturesLoop<<<1,1>>>();
+	//testDeviceMem<<<1,1>>>(dev_mat);
+	cudaDeviceSynchronize();
+	printf("OLD:\n");
+	testTexturesLoop2<<<1,1>>>();
+	cudaDeviceSynchronize();
+	testDeviceMem<<<1,1>>>(dev_mat, pitch);
+	cudaDeviceSynchronize();
+	printf("NEW: \n");
+	testTexturesLoop2<<<1,1>>>();
+	checkCudaErrors(cudaDeviceSynchronize());
+
+	checkCudaErrors(cudaUnbindTexture(tex));
+	checkCudaErrors(cudaFree(dev_mat));
+	checkCudaErrors(cudaFreeHost(host_mat));
+	return 0;
 }
