@@ -2,6 +2,8 @@
 // 1. coalesce memory accesses for m and nm
 // 2. put FP_ptr_copy into pointer form
 // 3. split kernels into edges and middle blocks (middle do not if checks in flow) -- started
+// 4. try arrays for more coalesced accesses
+// 5. reduce if statements
 
 #include "cuda_runtime.h"
 #include "cuda.h"
@@ -142,6 +144,97 @@ __global__ void PF_padded_texture_copy(float*m0, float*m1, float*m2, float*m3, d
 
 }
 
+__constant__ float cW[16];
+
+__global__ void PF_texture_slideright(float *nm0, size_t pitch)
+{
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	nm0[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[4] +
+										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[5] +
+										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[6] +
+										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[7];
+	//printf("nm0[%d] = %f \n", x + y * pitch/sizeof(float), nm0[x + y * pitch/sizeof(float)]);
+	//printf("x %d, y %d \n", x, y);
+}
+
+__global__ void PF_texture_slideleft(float *nm1, size_t pitch)
+{
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	nm1[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[0] +
+										tex2D(tex_m1, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[1] +
+										tex2D(tex_m2, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[2] +
+										tex2D(tex_m3, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[3];
+}
+
+__global__ void PF_texture_slideup(float *nm3, size_t pitch)
+{
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	nm3[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[8] +
+										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[9] +
+										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[10] +
+										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[11];
+}
+
+__global__ void PF_texture_slidedown(float *nm2, size_t pitch)
+{
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	nm2[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[12] +
+										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[13] +
+										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[14] +
+										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[15];
+}	
+
+__global__ void PF_registers_texture_flow(float * nm0, float * nm1, float * nm2, float * nm3, float * W, size_t pitch)
+{
+	__shared__ float sW[16];
+	float t0, t1, t2, t3;
+	float x = threadIdx.x + blockIdx.x * blockDim.x;
+	float y = threadIdx.y + blockIdx.y * blockDim.y;
+	int loc = x + y * pitch/sizeof(float);
+	x += 0.5f; y += 0.5f;
+
+	if ((threadIdx.x < 4) && (threadIdx.y < 4))
+	{
+		sW[threadIdx.x + threadIdx.y * 4] = W[threadIdx.x + threadIdx.y * 4];
+	}
+
+	
+	if ((x < MATRIX_DIM) && (y < MATRIX_DIM))
+	{
+		//t0 = tex2D(tex_m0, x-1, y); t1 = tex2D(tex_m1, x-1, y); t2 = tex2D(tex_m2, x-1, y); t3 = tex2D(tex_m3, x-1, y);
+		//nm0[loc] = t0*W[4] + t1*W[5] + t2*W[6] + t3*W[7];
+		nm0[loc] = tex2D(tex_m0, x-1,y)*sW[4] + tex2D(tex_m1, x-1, y)*sW[5] + tex2D(tex_m2, x-1, y)*sW[6] + tex2D(tex_m3, x-1, y)*sW[7];
+		nm1[loc] = tex2D(tex_m0, x+1,y)*sW[0] + tex2D(tex_m1, x+1, y)*sW[1] + tex2D(tex_m2, x+1, y)*sW[2] + tex2D(tex_m3, x+1, y)*sW[3];
+		nm2[loc] = tex2D(tex_m0, x,y-1)*sW[12] + tex2D(tex_m1, x, y-1)*sW[13] + tex2D(tex_m2, x, y-1)*sW[14] + tex2D(tex_m3, x, y-1)*sW[15];
+		nm3[loc] = tex2D(tex_m0, x,y+1)*sW[8] + tex2D(tex_m1, x, y+1)*sW[9] + tex2D(tex_m2, x, y+1)*sW[10] + tex2D(tex_m3, x, y+1)*sW[11];
+		//t0 = tex2D(tex_m0, x+1, y); t1 = tex2D(tex_m1, x+1, y); t2 = tex2D(tex_m2, x+1, y); t3 = tex2D(tex_m3, x+1, y);
+		//nm1[loc] = t0*W[0] + t1*W[1] + t2*W[2] + t3*W[3];
+		//t0 = tex2D(tex_m0, x, y-1); t1 = tex2D(tex_m1, x, y-1); t2 = tex2D(tex_m2, x, y-1); t3 = tex2D(tex_m3, x, y-1);
+		//nm0[loc] = t0*W[12] + t1*W[13] + t2*W[14] + t3*W[15];
+		//t0 = tex2D(tex_m0, x, y+1); t1 = tex2D(tex_m1, x, y+1); t2 = tex2D(tex_m2, x, y+1); t3 = tex2D(tex_m3, x, y+1);
+		//nm0[loc] = t0*W[8] + t1*W[9] + t2*W[10] + t3*W[11];
+	}
+
+}
+
+__global__ void PF_mindlesspadded_texture_flow(dim3 srcloc, float src, bool* wallLoc, float*nm0, float*nm1, float* nm2, float* nm3, dim3 matdim, float * WWall, float *W, size_t pitch)
+{
+	__shared__ float sW[16];
+	__shared__ float sMemM0[BLOCK_DIMx][BLOCK_DIMy]; // old block dimension + 1 on each side
+	__shared__ float sMemM1[BLOCK_DIMx][BLOCK_DIMy]; // old block dimension + 1 on each side
+	__shared__ float sMemM2[BLOCK_DIMx][BLOCK_DIMy]; // old block dimension + 1 on each side
+	__shared__ float sMemM3[BLOCK_DIMx][BLOCK_DIMy]; // old block dimension + 1 on each side
+	float x = threadIdx.x + blockIdx.x * blockDim.x + 0.5f;
+	float y = threadIdx.y + blockIdx.y * blockDim.y + 0.5f;
+	unsigned int shX = threadIdx.x + 1;
+	unsigned int shY = threadIdx.y + 1;
+	int loc = x + y * pitch/sizeof(float);
+}
+
 __global__ void PF_padded_texture_flow(dim3 srcloc, float src, bool* wallLoc, float*nm0, float*nm1, float* nm2, float* nm3, dim3 matdim, float * WWall, float *W, size_t pitch)
 {
 	__shared__ float sWWall[16];
@@ -150,8 +243,8 @@ __global__ void PF_padded_texture_flow(dim3 srcloc, float src, bool* wallLoc, fl
 	__shared__ float sMemM1[BLOCK_DIMx+2][BLOCK_DIMy+2];
 	__shared__ float sMemM2[BLOCK_DIMx+2][BLOCK_DIMy+2];
 	__shared__ float sMemM3[BLOCK_DIMx+2][BLOCK_DIMy+2];
-	float x = threadIdx.x + blockIdx.x * blockDim.x;
-	float y = threadIdx.y + blockIdx.y * blockDim.y;
+	float x = threadIdx.x + blockIdx.x * blockDim.x + 0.5f;
+	float y = threadIdx.y + blockIdx.y * blockDim.y + 0.5f;
 	unsigned int shX = threadIdx.x + 1;
 	unsigned int shY = threadIdx.y + 1;
 	int loc = x + y * pitch/sizeof(float);
@@ -167,33 +260,33 @@ __global__ void PF_padded_texture_flow(dim3 srcloc, float src, bool* wallLoc, fl
 	
 	if ((x < MATRIX_DIM) && (y < MATRIX_DIM)) // Make sure cell is within the environment grid
 	{
-		sMemM0[shX][shY] = tex2D(tex_m0, x+0.5f, y+0.5f);
-		sMemM1[shX][shY] = tex2D(tex_m1, x+0.5f, y+0.5f);
-		sMemM2[shX][shY] = tex2D(tex_m2, x+0.5f, y+0.5f);
-		sMemM3[shX][shY] = tex2D(tex_m3, x+0.5f, y+0.5f);
+		sMemM0[shX][shY] = tex2D(tex_m0, x, y);
+		sMemM1[shX][shY] = tex2D(tex_m1, x, y);
+		sMemM2[shX][shY] = tex2D(tex_m2, x, y);
+		sMemM3[shX][shY] = tex2D(tex_m3, x, y);
 	
 		// handle edges
 		if (threadIdx.x == 0) // left
 		{
-			sMemM0[0][shY] = tex2D(tex_m0, x-0.5f, y); sMemM1[0][shY] = tex2D(tex_m1, x-0.5f, y);
-			sMemM2[0][shY] = tex2D(tex_m2, x-0.5f, y); sMemM3[0][shY] = tex2D(tex_m3, x-0.5f, y);
+			sMemM0[0][shY] = tex2D(tex_m0, x-1.0f, y); sMemM1[0][shY] = tex2D(tex_m1, x-1.0f, y);
+			sMemM2[0][shY] = tex2D(tex_m2, x-1.0f, y); sMemM3[0][shY] = tex2D(tex_m3, x-1.0f, y);
 		}
 		else if (threadIdx.x == (BLOCK_DIMx - 1)) // right
 		{
-			sMemM0[BLOCK_DIMx+1][shY] = tex2D(tex_m0, x+1.5f, y); sMemM1[BLOCK_DIMx+1][shY] = tex2D(tex_m1, x+1.5f, y);
-			sMemM2[BLOCK_DIMx+1][shY] = tex2D(tex_m2, x+1.5f, y); sMemM3[BLOCK_DIMx+1][shY] = tex2D(tex_m3, x+1.5f, y);
+			sMemM0[BLOCK_DIMx+1][shY] = tex2D(tex_m0, x+1.0f, y); sMemM1[BLOCK_DIMx+1][shY] = tex2D(tex_m1, x+1.0f, y);
+			sMemM2[BLOCK_DIMx+1][shY] = tex2D(tex_m2, x+1.0f, y); sMemM3[BLOCK_DIMx+1][shY] = tex2D(tex_m3, x+1.0f, y);
 		}
 		// MISSING THE CORNER BLOCK~ FIX IT
 
 		if (threadIdx.y == 0) // up
 		{
-			sMemM0[shX][0] = tex2D(tex_m0, x, y-0.5f); sMemM1[shX][0] = tex2D(tex_m1, x, y-0.5f); 
-			sMemM2[shX][0] = tex2D(tex_m2, x, y-0.5f); sMemM3[shX][0] = tex2D(tex_m3, x, y-0.5f); 
+			sMemM0[shX][0] = tex2D(tex_m0, x, y-1); sMemM1[shX][0] = tex2D(tex_m1, x, y-1); 
+			sMemM2[shX][0] = tex2D(tex_m2, x, y-1); sMemM3[shX][0] = tex2D(tex_m3, x, y-1); 
 		}
 		else if (threadIdx.y == (BLOCK_DIMy - 1)) // down
 		{
-			sMemM0[shX][BLOCK_DIMy+1] = tex2D(tex_m0, x, y+1.5f); sMemM1[shX][BLOCK_DIMy+1] = tex2D(tex_m1, x, y+1.5f);
-			sMemM2[shX][BLOCK_DIMy+1] = tex2D(tex_m2, x, y+1.5f); sMemM3[shX][BLOCK_DIMy+1] = tex2D(tex_m3, x, y+1.5f);
+			sMemM0[shX][BLOCK_DIMy+1] = tex2D(tex_m0, x, y+1); sMemM1[shX][BLOCK_DIMy+1] = tex2D(tex_m1, x, y+1);
+			sMemM2[shX][BLOCK_DIMy+1] = tex2D(tex_m2, x, y+1); sMemM3[shX][BLOCK_DIMy+1] = tex2D(tex_m3, x, y+1);
 		}
 	}
 	__syncthreads(); // sync the shared memory writes
@@ -434,6 +527,7 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 
 	checkCudaErrors(cudaMemcpy(dev_WWall, host_WWall, WWAL_DIMx*WWAL_DIMy*sizeof(float), cudaMemcpyHostToDevice));
 	checkCudaErrors(cudaMemcpy(dev_W, host_W, W_DIMx*W_DIMy*sizeof(float), cudaMemcpyHostToDevice));
+	checkCudaErrors(cudaMemcpyToSymbol(cW, host_W, W_DIMx*W_DIMy*sizeof(float), 0U, cudaMemcpyHostToDevice));
 
 	cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>(); // not happy?
 	tex_m0.normalized = false;	tex_m0.filterMode = cudaFilterModeLinear; tex_m0.addressMode[0] = cudaAddressModeBorder;
@@ -469,43 +563,87 @@ void cPFcaller(unsigned int num_iterations, float * &m_ptr)
 	float * p_src_m2 = dev_m2 + src_loc.y * pitch/sizeof(float) + src_loc.x;
 	float * p_src_m3 = dev_m3 + src_loc.y * pitch/sizeof(float) + src_loc.y;
 
+	
+
+	cudaStream_t stream1, stream2, stream3, stream4;
+	cudaStreamCreate(&stream1);
+	cudaStreamCreate(&stream2);
+	cudaStreamCreate(&stream3);
+	cudaStreamCreate(&stream4);
+
+	dim3 stream_threads;
+	dim3 stream_blocks;
+	stream_threads.x = 1;
+	stream_threads.y = 256;
+	stream_threads.z = 1;
+	stream_blocks.x = 1;
+	stream_blocks.y = (MATRIX_DIM + stream_threads.y - 1) /stream_threads.y; //((MATRIX_DIM + BLOCK_DIMy - 1)/BLOCK_DIMy)
+
+	cudaEvent_t start,stop;
+	cudaEventCreate(&start); cudaEventCreate(&stop);
+	cudaEventRecord(start,0);
 	clock_t t2; t2=clock(); // begin timing
 
 	for (int iter = 0; iter < gpu_iterations; iter++)
 	{
 		source = src_amplitude * sin(2 * PI * src_frequency * (double)(iter) * 0.01);
-
-		checkCudaErrors(cudaMemcpyAsync(p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice));
+		cudaMemcpy(p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice);
+		cudaMemcpy(p_src_m1, &source, sizeof(float), cudaMemcpyHostToDevice);
+		cudaMemcpy(p_src_m2, &source, sizeof(float), cudaMemcpyHostToDevice);
+		cudaMemcpy(p_src_m3, &source, sizeof(float), cudaMemcpyHostToDevice);
+		cudaDeviceSynchronize();
+		/*checkCudaErrors(cudaMemcpy(p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice));
 		checkCudaErrors(cudaMemcpy(p_src_m1, &source, sizeof(float), cudaMemcpyHostToDevice));
 		checkCudaErrors(cudaMemcpy(p_src_m2, &source, sizeof(float), cudaMemcpyHostToDevice));
 		checkCudaErrors(cudaMemcpy(p_src_m3, &source, sizeof(float), cudaMemcpyHostToDevice));
 		 
-		checkCudaErrors(cudaDeviceSynchronize());
+		checkCudaErrors(cudaDeviceSynchronize());*/
 
 		//printf("Calculation \n");
-		PF_padded_texture_flow<<<grids,threads,shared_mem_size>>>(src_loc, source, dev_wall, dev_nm0, dev_nm1, dev_nm2, dev_nm3, matdim, dev_WWall, dev_W, pitch);
+		//PF_padded_texture_flow<<<grids,threads,shared_mem_size>>>(src_loc, source, dev_wall, dev_nm0, dev_nm1, dev_nm2, dev_nm3, matdim, dev_WWall, dev_W, pitch);
 		// PF_padded_texture_flow(dim3 srcloc, float src, bool* wallLoc, float*nm0, float*nm1, float* nm2, float* nm3, dim3 matdim, float * WWall, float *W)
+		//PF_registers_texture_flow<<<grids,threads, (W_DIMx*W_DIMy*sizeof(float))>>>(dev_nm0, dev_nm1, dev_nm2, dev_nm3, dev_W, pitch);
+		//__global__ void PF_registers_texture_flow(float * nm0, float * nm1, float * nm2, float * nm3, float * W, size_t pitch)
 		//checkCudaErrors(cudaPeekAtLastError());
-		checkCudaErrors(cudaDeviceSynchronize());
 
-		//printf("NM texture values \n");
-		//testTexturesLoop<<<1,1>>>();
-		//cudaDeviceSynchronize();
+		/*PF_texture_slideright<<<stream_blocks, stream_threads, 0, stream1>>>(dev_nm0, pitch);
+		PF_texture_slideleft<<<stream_blocks, stream_threads, 0, stream2>>>(dev_nm1, pitch);
+		PF_texture_slidedown<<<stream_blocks, stream_threads, 0, stream3>>>(dev_nm2, pitch);
+		PF_texture_slideup<<<stream_blocks, stream_threads, 0, stream4>>>(dev_nm3, pitch);*/
+
+		PF_texture_slideright<<<grids, threads, 0, stream1>>>(dev_nm0, pitch);
+		PF_texture_slideleft<<<grids, threads, 0, stream2>>>(dev_nm1, pitch);
+		PF_texture_slidedown<<<grids, threads, 0, stream3>>>(dev_nm2, pitch);
+		PF_texture_slideup<<<grids, threads, 0, stream4>>>(dev_nm3, pitch);
+
+		//checkCudaErrors(cudaDeviceSynchronize());
+		cudaDeviceSynchronize();
+
+		/*printf("NM texture values \n");
+		testTexturesLoop<<<1,1>>>();
+		cudaDeviceSynchronize();*/
 		
 		PF_padded_texture_copy<<<grids,threads>>>(dev_m0, dev_m1, dev_m2, dev_m3, matdim, pitch);
 		cudaDeviceSynchronize();
 
-		//printf("M texture values \n");
-		//testTexturesLoop<<<1,1>>>();
-		//cudaDeviceSynchronize();
+		/*printf("M texture values \n");
+		testTexturesLoop<<<1,1>>>();
+		cudaDeviceSynchronize();*/
 	}
+
+	cudaEventRecord(stop,0); cudaEventSynchronize(stop);
+	float elapsedtime;
+	cudaEventElapsedTime(&elapsedtime, start, stop);
+	printf("CUDA measured: %3.1f ms \n", elapsedtime);
+	cudaEventDestroy(start); cudaEventDestroy(stop);
 
 	long int final=clock()-t2; printf("GPU iterations took %li ticks (%f seconds) \n", final, ((float)final)/CLOCKS_PER_SEC);
 	
 	m_host = (float *)malloc(sizeof(float)*MATRIX_DIM*MATRIX_DIM);
 	m_ptr = m_host; // So that the class can access M values
 	
-	checkCudaErrors(cudaMemcpy(m_host, dev_m0, MATRIX_DIM*MATRIX_DIM*sizeof(float), cudaMemcpyDeviceToHost));
+	//checkCudaErrors(cudaMemcpy(m_host, dev_m0, MATRIX_DIM*MATRIX_DIM*sizeof(float), cudaMemcpyDeviceToHost));
+	checkCudaErrors(cudaMemcpy2D(m_host, MATRIX_DIM*sizeof(float), dev_m0, pitch, MATRIX_DIM*sizeof(float), MATRIX_DIM, cudaMemcpyDeviceToHost));
 	cudaDeviceSynchronize();
 	//status = cudaMemcpy3D(&hm_p);
 
