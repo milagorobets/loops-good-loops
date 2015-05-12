@@ -19,11 +19,13 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 #include <cuda.h>
+#include <glew.h>
+#include <freeglut.h>
 //#include <cuda_runtime.h>
 //#include <cuda_runtime_api.h>
 
-int position_sourceX = 3;
-int position_sourceY = 3;
+int position_sourceX = 64;
+int position_sourceY = 64;
 
 float frequency_source = 1;
 

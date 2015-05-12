@@ -73,6 +73,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>D:\Mila\CPUGPUSTUFF\cuda_by_example\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>D:\Mila\CPUGPUSTUFF\cuda_by_example\common;C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\common\inc\GL;D:\Mila\CPUGPUSTUFF\cuda_by_example\common\GL;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

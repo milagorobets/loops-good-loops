@@ -15,6 +15,7 @@ void init_MatrixFlowType(matrixFlow_types* MATRIX_TYPE, float matrix[][4])
 				matrix[i][j]=matrixFlow[i][j];
 			}
 		}
+		
 	}
 	else if (*MATRIX_TYPE == POSITIVE)
 	{

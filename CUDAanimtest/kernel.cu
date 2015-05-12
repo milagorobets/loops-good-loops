@@ -23,6 +23,10 @@
 #include <cuda_runtime_api.h>
 #include <cassert>
 #include <cmath>
+#include <glew.h>
+#include <freeglut.h>
+#include "book.h"
+#include "gpu_anim.h"
 
 #define DIM 5
 #define THREADx 16
@@ -95,6 +99,40 @@ __global__ void testDeviceMem(float* dev, size_t pitch)
 			printf(", texture %f\n", (float)(tex2D(tex, (float)(x)+0.5f, (float)(y)+0.5f)));
 		}
 	}
+}
+
+GLuint rtexture;
+GLuint rbuffer;
+
+void setupDisplay(void)
+{
+	int dev;
+	width = 512; height = 512;
+	cudaDeviceProp prop;
+	memset(&prop, 0, sizeof(cudaDeviceProp));
+    prop.major = 1; prop.minor = 0;
+	checkCudaErrors(cudaChooseDevice(&dev, &prop));
+	checkCudaErrors(cudaGLSetGLDevice(dev));
+
+	// texture buffer
+	glGenTextures(1, &rtexture);
+	glBindTexture(GL_TEXTURE_2D, rtexture);
+
+	// what happens if we try to fetch outside of the texture? well:
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // for coordinate S
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // for coordinate T
+	// how many pixels of the texture are blended if the pixel is mapped to an area that is:
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // larger than a single texture element (no filtering)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // smaller than a single texture element (no filtering)
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	glBindTexture(GL_TEXTURE_2D, 0); // unbind texture for future use
+
+	// pixel buffer
+	glGenBuffers(1, &rbuffer);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, rbuffer);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER, 
 }
 
 int main(void)

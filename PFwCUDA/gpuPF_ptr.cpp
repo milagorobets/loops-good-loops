@@ -50,7 +50,8 @@ void GPU_PTR::cpuAlgoPixelFlow_delete()
 
 void GPU_PTR::cpuAlgoPixelFlow(unsigned int num_iterations)
 {
-	cPFcaller(num_iterations, m_ptr);
+	//cPFcaller(num_iterations, m_ptr);
+	cPFcaller_display(num_iterations, m_ptr);
 }
 
 void GPU_PTR::cpuAlgoPixelFlow_updateSource(int t)

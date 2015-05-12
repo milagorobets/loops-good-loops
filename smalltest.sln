@@ -15,6 +15,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleTexture", "C:\Program
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boxFilter", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\3_Imaging\boxFilter\boxFilter_vs2010.vcxproj", "{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hashTable", "hashTable\hashTable.vcxproj", "{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "conjugateGradient", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\7_CUDALibraries\conjugateGradient\conjugateGradient_vs2010.vcxproj", "{70673388-AC25-4DB8-BA61-F6796C94CA36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -99,6 +103,28 @@ Global
 		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|Win32.ActiveCfg = Release|x64
 		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|x64.ActiveCfg = Release|x64
 		{12CE2022-9F94-4D82-8EA5-F0C1D0459EDB}.Release|x64.Build.0 = Release|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|Win32.Build.0 = Debug|Win32
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|x64.ActiveCfg = Debug|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Debug|x64.Build.0 = Debug|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|Mixed Platforms.Build.0 = Release|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|Win32.ActiveCfg = Release|Win32
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|Win32.Build.0 = Release|Win32
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|x64.ActiveCfg = Release|x64
+		{6D03539F-28E3-4C74-B9FE-A97B23FE11D4}.Release|x64.Build.0 = Release|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Debug|Win32.ActiveCfg = Debug|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Debug|x64.ActiveCfg = Debug|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Debug|x64.Build.0 = Debug|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Release|Mixed Platforms.Build.0 = Release|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Release|Win32.ActiveCfg = Release|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Release|x64.ActiveCfg = Release|x64
+		{70673388-AC25-4DB8-BA61-F6796C94CA36}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
