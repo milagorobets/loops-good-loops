@@ -10,6 +10,9 @@
     <CudaCompile Include="cPFkernel_ptr.cu">
       <Filter>src</Filter>
     </CudaCompile>
+    <CudaCompile Include="cPFkernel_fastrender.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -48,6 +51,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="gpuPF_ptr.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="cPFkernel_fastrender.cuh">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

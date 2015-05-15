@@ -61,6 +61,7 @@ texture<float,2,cudaReadModeElementType> tex_nm2;
 texture<float,2,cudaReadModeElementType> tex_nm3;
 texture<float,2,cudaReadModeElementType> tex_WWall;
 texture<float,2,cudaReadModeElementType> tex_W;
+texture<float,2,cudaReadModeElementType> tex_avg_m;
 
 cudaStream_t v_stream1, v_stream2, v_stream3, v_stream4;
 dim3 v_threads(BLOCK_DIMx,BLOCK_DIMy,1);
@@ -73,6 +74,78 @@ float * v_p_src_m3;
 size_t v_pitch;
 int v_shared_mem_size;
 
+float * dev_m0, *dev_m1, *dev_m2, *dev_m3, *dev_avg_m;
+float * dev_nm0, *dev_nm1, *dev_nm2, *dev_nm3;
+float * dev_WWall, * dev_W;
+byte * dev_wall;
+
+byte * host_src;
+byte * dev_src;
+
+void addSrc(int x, int y)
+{
+	if (!(host_src[x + (MATRIX_DIM - 1 - y) * MATRIX_DIM]))
+	{
+		host_src[x + (MATRIX_DIM - 1 - y) * MATRIX_DIM] = 1;
+		checkCudaErrors(cudaMemcpy(dev_src, host_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+	}
+}
+
+#define DEL_MIN -10
+#define DEL_MAX 10
+
+void removeSrc(int x, int y)
+{
+	int ry = (MATRIX_DIM - 1 - y);
+	for (int iy = DEL_MIN; iy < DEL_MAX; iy++)
+	{
+		for (int ix = DEL_MIN; ix < DEL_MAX; ix++)
+		{
+			if (((x + ix)>0) && ((ry + iy) > 0))
+			{
+				host_src[x + ix + (ry + iy) * MATRIX_DIM] = 0;
+				//checkCudaErrors(cudaMemset2D(dev_m0 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_m1 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_m2 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_m3 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_nm0 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_nm1 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_nm2 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+				//checkCudaErrors(cudaMemset2D(dev_nm3 + (ry + iy) * v_pitch/sizeof(float) + x + ix, v_pitch, 0, sizeof(float), 1));
+			}
+		}
+	}
+	checkCudaErrors(cudaMemcpy(dev_src, host_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+	//if (host_src[x + ry * MATRIX_DIM])
+	//{
+	//	host_src[x + ry * MATRIX_DIM] = 0;
+	//	checkCudaErrors(cudaMemcpy(dev_src, host_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+		checkCudaErrors(cudaMemset2D(dev_m0, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m1, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m2, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m3, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+	//	/*checkCudaErrors(cudaMemset((dev_m0 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_m1 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_m2 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_m3 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_nm0 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_nm1 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_nm2 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));
+	//	checkCudaErrors(cudaMemset((dev_nm3 + ry * v_pitch/sizeof(float) + x), 0, sizeof(float)));*/
+	//}
+}
+
+void removeAllSrc(void)
+{
+	memset(host_src, 0, MATRIX_DIM*MATRIX_DIM*sizeof(byte));
+	checkCudaErrors(cudaMemset(dev_src, 0, MATRIX_DIM*MATRIX_DIM*sizeof(byte)));
+	checkCudaErrors(cudaMemset2D(dev_m0, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m1, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m2, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+		checkCudaErrors(cudaMemset2D(dev_m3, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+	//checkCudaErrors(cudaMemset2D(dev_avg_m, v_pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+	//checkCudaErrors(cudaMemcpy(dev_src, host_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+}
 
 __global__ void PF_ptr_copy(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExtent mExt, dim3 matdim)
 {
@@ -126,7 +199,7 @@ __global__ void PF_ptr_copy(cudaPitchedPtr mPtr, cudaPitchedPtr nmPtr, cudaExten
 	}
 }
 
-__global__ void PF_copy_withWall(float*m0, float*m1, float*m2, float*m3, byte * wall, dim3 matdim, size_t pitch)
+__global__ void PF_copy_withWall(float*m0, float*m1, float*m2, float*m3, byte * wall, dim3 matdim, size_t pitch, byte * src, float source_val)
 {
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
@@ -157,11 +230,19 @@ __global__ void PF_copy_withWall(float*m0, float*m1, float*m2, float*m3, byte * 
 		// write values
 		if (wall[x + y * MATRIX_DIM] == 1)
 		{
-			m0[loc] = 0.5f*t0;
-			m1[loc] = 0.5f*t1;
-			m2[loc] = 0.5f*t2;
-			m3[loc] = 0.5f*t3;
+			m0[loc] = 0.1f*t0;
+			m1[loc] = 0.1f*t1;
+			m2[loc] = 0.1f*t2;
+			m3[loc] = 0.1f*t3;
 			//printf("wall!\n");
+		}
+		else if (src[x + y * MATRIX_DIM] == 1)
+		{
+			//printf("source at %d, %d", x, y);
+			m0[loc] = source_val;
+			m1[loc] = source_val;
+			m2[loc] = source_val;
+			m3[loc] = source_val;
 		}
 		else
 		{
@@ -212,16 +293,30 @@ __global__ void PF_padded_texture_copy(float*m0, float*m1, float*m2, float*m3, d
 }
 
 __constant__ float cW[16];
-
+#define STR 0.0
+#define BND 0.5
 __global__ void PF_texture_slideright(float *nm0, size_t pitch)
 {
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
+#if 0
 	nm0[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[4] +
 										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[5] +
 										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[6] +
 										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[7];
 	//printf("nm0[%d] = %f \n", x + y * pitch/sizeof(float), nm0[x + y * pitch/sizeof(float)]);
+#else
+	nm0[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 0.5f) *(-STR) +
+										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+										(0 +
+										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 1.5f) -
+										tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 1.5f) -
+										tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) - 0.5f) +
+										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) - 0.5f)										
+										) * BND;
+#endif
 	//printf("x %d, y %d \n", x, y);
 }
 
@@ -229,30 +324,69 @@ __global__ void PF_texture_slideleft(float *nm1, size_t pitch)
 {
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
+#if 0
 	nm1[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[0] +
 										tex2D(tex_m1, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[1] +
 										tex2D(tex_m2, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[2] +
 										tex2D(tex_m3, (float)(x) + 1.5f, (float)(y) + 0.5f)*cW[3];
+# else
+	nm1[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 1.5f, (float)(y) + 0.5f)*(STR) +
+										tex2D(tex_m1, (float)(x) + 1.5f, (float)(y) + 0.5f)*(-STR) +
+										tex2D(tex_m2, (float)(x) + 1.5f, (float)(y) + 0.5f)*STR +
+										tex2D(tex_m3, (float)(x) + 1.5f, (float)(y) + 0.5f)*STR +
+										(0 +
+										tex2D(tex_m3, (float)(x) + 1.5f, (float)(y) - 0.5f) - 
+										tex2D(tex_m1, (float)(x) + 1.5f, (float)(y) - 0.5f) -
+										tex2D(tex_m1, (float)(x) + 1.5f, (float)(y) + 1.5f) +
+										tex2D(tex_m2, (float)(x) + 1.5f, (float)(y) + 1.5f)										
+										) * BND;
+#endif
 }
 
 __global__ void PF_texture_slideup(float *nm3, size_t pitch)
 {
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
+#if 0
 	nm3[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[8] +
 										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[9] +
 										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[10] +
 										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) - 0.5f)*cW[11];
+#else
+	nm3[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) + 1.5f)*STR +
+										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) + 1.5f)*STR +
+										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) + 1.5f)*STR +
+										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) + 1.5f)*(-STR)+
+										(0 +
+										tex2D(tex_m0, (float)(x) + 1.5f, (float)(y) + 1.5f) -
+										tex2D(tex_m3, (float)(x) + 1.5f, (float)(y) + 1.5f) +
+										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) - 0.5f) -
+										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) - 0.5f) 
+										) * BND;
+#endif
 }
 
 __global__ void PF_texture_slidedown(float *nm2, size_t pitch)
 {
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
 	int x = threadIdx.x + blockIdx.x * blockDim.x;
+#if 0
 	nm2[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[12] +
 										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[13] +
 										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[14] +
 										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) + 1.5f)*cW[15];
+#else
+	nm2[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) + 0.5f, (float)(y) - 0.5f)*STR +
+										tex2D(tex_m1, (float)(x) + 0.5f, (float)(y) - 0.5f)*STR +
+										tex2D(tex_m2, (float)(x) + 0.5f, (float)(y) - 0.5f)*(-STR) +
+										tex2D(tex_m3, (float)(x) + 0.5f, (float)(y) - 0.5f)*STR +
+										(0 +
+										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) - 0.5f) -
+										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) - 0.5f) +
+										tex2D(tex_m0, (float)(x) + 1.5f, (float)(y) - 0.5f) -
+										tex2D(tex_m2, (float)(x) + 1.5f, (float)(y) - 0.5f)
+										) * BND;
+#endif
 }	
 
 __global__ void PF_registers_texture_flow(float * nm0, float * nm1, float * nm2, float * nm3, float * W, size_t pitch)
@@ -445,6 +579,46 @@ __global__ void PF_texture_flow(dim3 srcloc, float src, bool* wallLoc, float* nm
 	}
 }
 
+__global__ void float_to_color_power_dBm( uchar4 *optr,
+                         size_t pitch, byte* walls) {
+
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+    int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int offset = x + y * MATRIX_DIM;
+	//int poffset = x + y * pitch/sizeof(float);
+
+	float l = tex2D(tex_avg_m, (x)+0.5f, (y)+0.5f);
+	
+	// Convert l to dBm:
+	l = 10 * log10f(abs(l)); // abs == 0 -l when negative, faster?
+
+	if (l < -110)
+	{
+		optr[offset].x = 255; optr[offset].y = 0; optr[offset].z = 0;
+	}
+	else if (l < -100)
+	{
+		optr[offset].x = 0; optr[offset].y = 9; optr[offset].z = 255;
+	}
+	else if (l < -90)
+	{
+		optr[offset].x = 255; optr[offset].y = 154; optr[offset].z = 0;
+	}
+	else if (l < -80)
+	{
+		optr[offset].x = 255; optr[offset].y = 247; optr[offset].z = 0;
+	}
+	else
+	{
+		optr[offset].x = 40; optr[offset].y = 172; optr[offset].z = 7;
+	}
+
+	if (walls[offset])
+	{
+		optr[offset].x = 0; optr[offset].y = 0; optr[offset].z = 0;
+	}
+
+}
 
 __global__ void clean_bitmap(uchar4 *optr)
 {
@@ -551,18 +725,30 @@ __global__ void add_and_average_signal(size_t pitch, int iter, float * avg_m)
     int y = threadIdx.y + blockIdx.y * blockDim.y;
 	int poffset = x + y * pitch/sizeof(float);
 
-	float total=(tex2D(tex_m0, (blockIdx.x)+0.5f, (blockIdx.y)+0.5f))+
-				(tex2D(tex_m1, (blockIdx.x)+0.5f, (blockIdx.y)+0.5f))+
-				(tex2D(tex_m2, (blockIdx.x)+0.5f, (blockIdx.y)+0.5f))+
-				(tex2D(tex_m3, (blockIdx.x)+0.5f, (blockIdx.y)+0.5f));
-	total *= total; // square for power
-	if (iter != 0)	total += tex2D(tex_avg_m, (blockIdx.x)+0.5f, (blockIdx.y)+0.5f);
+	float total=((tex2D(tex_m0, (x)+0.5f, (y)+0.5f))+
+				(tex2D(tex_m1, (x)+0.5f, (y)+0.5f))+
+				(tex2D(tex_m2, (x)+0.5f, (y)+0.5f))+
+				(tex2D(tex_m3, (x)+0.5f, (y)+0.5f)))*0.125;
+
+	total = total*total; // square for power
+	
+	if (iter % SAMPLES_TO_AVERAGE)
+	{
+		float oldavg = tex2D(tex_avg_m, (x)+0.5, (y)+0.5);
+		total = oldavg*(SAMPLES_TO_AVERAGE-1) + total;
+		avg_m[poffset] = total/SAMPLES_TO_AVERAGE;
+	}
+	else
+	{
+		avg_m[poffset] = total;
+	}
+	/*if (iter != 0)	total += tex2D(tex_avg_m, (x)+0.5f, (y)+0.5f);
 	
 	if (iter == SAMPLES_TO_AVERAGE-1)
 	{
-		total /= SAMPLES_TO_AVERAGE;
+		total = total / SAMPLES_TO_AVERAGE;
 	}
-	avg_m[poffset] = total;
+	avg_m[poffset] = total;*/
 
 }
 
@@ -881,10 +1067,7 @@ __global__ void PF_ptr_flow(cudaPitchedPtr mPtr, cudaExtent mExt,
 //
 //}
 
-float * dev_m0, *dev_m1, *dev_m2, *dev_m3;
-float * dev_nm0, *dev_nm1, *dev_nm2, *dev_nm3;
-float * dev_WWall, * dev_W;
-byte * dev_wall;
+
 
 void cPFcaller_display_exit(void)
 {
@@ -948,6 +1131,7 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 	checkCudaErrors(cudaMallocPitch((void**)&dev_nm1, &pitch, MATRIX_DIM*sizeof(float), MATRIX_DIM));
 	checkCudaErrors(cudaMallocPitch((void**)&dev_nm2, &pitch, MATRIX_DIM*sizeof(float), MATRIX_DIM));
 	checkCudaErrors(cudaMallocPitch((void**)&dev_nm3, &pitch, MATRIX_DIM*sizeof(float), MATRIX_DIM));
+	checkCudaErrors(cudaMallocPitch((void**)&dev_avg_m, &pitch, MATRIX_DIM*sizeof(float), MATRIX_DIM));
 
 	checkCudaErrors(cudaMalloc( (void**)&dev_WWall, WWAL_DIMx*WWAL_DIMy*sizeof(float))); // WWall
 	checkCudaErrors(cudaMalloc( (void**)&dev_W, W_DIMx*W_DIMy*sizeof(float))); // W
@@ -960,6 +1144,7 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 	checkCudaErrors(cudaMemset2D(dev_nm1, pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM)); // set 0 to every BYTE
 	checkCudaErrors(cudaMemset2D(dev_nm2, pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM)); // set 0 to every BYTE
 	checkCudaErrors(cudaMemset2D(dev_nm3, pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM)); // set 0 to every BYTE
+	checkCudaErrors(cudaMemset2D(dev_avg_m, pitch, 0, MATRIX_DIM*sizeof(float), MATRIX_DIM));
 
 	checkCudaErrors(cudaMemcpy(dev_WWall, host_WWall, WWAL_DIMx*WWAL_DIMy*sizeof(float), cudaMemcpyHostToDevice));
 	checkCudaErrors(cudaMemcpy(dev_W, host_W, W_DIMx*W_DIMy*sizeof(float), cudaMemcpyHostToDevice));
@@ -967,6 +1152,9 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 
 	checkCudaErrors(cudaMalloc( (void**)&dev_wall, MATRIX_DIM*MATRIX_DIM*sizeof(byte)));
 	checkCudaErrors(cudaMemcpy(dev_wall, host_Wall, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+
+	checkCudaErrors(cudaMalloc((void**)&dev_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte)));
+	checkCudaErrors(cudaMemcpy(dev_src, host_src, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
 
 	cudaChannelFormatDesc desc = cudaCreateChannelDesc<float>(); // not happy?
 	tex_m0.normalized = false;	tex_m0.filterMode = cudaFilterModeLinear; tex_m0.addressMode[0] = cudaAddressModeBorder;
@@ -977,6 +1165,7 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 	tex_nm1.normalized = false;	tex_nm1.filterMode = cudaFilterModeLinear;tex_nm1.addressMode[0] = cudaAddressModeBorder;
 	tex_nm2.normalized = false;	tex_nm2.filterMode = cudaFilterModeLinear;tex_nm2.addressMode[0] = cudaAddressModeBorder;
 	tex_nm3.normalized = false;	tex_nm3.filterMode = cudaFilterModeLinear;tex_nm3.addressMode[0] = cudaAddressModeBorder;	
+	tex_avg_m.normalized = false;	tex_avg_m.filterMode = cudaFilterModeLinear;tex_avg_m.addressMode[0] = cudaAddressModeBorder;
 	
 	checkCudaErrors(cudaBindTexture2D(NULL, tex_m0, dev_m0, desc, MATRIX_DIM, MATRIX_DIM, pitch));
 	checkCudaErrors(cudaBindTexture2D(NULL, tex_m1, dev_m1, desc, MATRIX_DIM, MATRIX_DIM, pitch));
@@ -986,6 +1175,7 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 	checkCudaErrors(cudaBindTexture2D(NULL, tex_nm1, dev_nm1, desc, MATRIX_DIM, MATRIX_DIM, pitch));
 	checkCudaErrors(cudaBindTexture2D(NULL, tex_nm2, dev_nm2, desc, MATRIX_DIM, MATRIX_DIM, pitch));
 	checkCudaErrors(cudaBindTexture2D(NULL, tex_nm3, dev_nm3, desc, MATRIX_DIM, MATRIX_DIM, pitch));
+	checkCudaErrors(cudaBindTexture2D(NULL, tex_avg_m, dev_avg_m, desc, MATRIX_DIM, MATRIX_DIM, pitch));
 
 	// Allocate 2D array for wall (unrolled to 1D) -- implement hash table
 	//checkCudaErrors(cudaMalloc((void**)&dev_wall, matdim.x*matdim.y*sizeof(bool))); // x*y elements in a 1D array
@@ -997,11 +1187,10 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 	v_shared_mem_size = 2 * WWAL_DIMx * WWAL_DIMy * sizeof(float) + BLOCK_DIMx*BLOCK_DIMy*4*sizeof(float);
 	
 	v_p_src_m0 = dev_m0 + src_loc.y * pitch/sizeof(float) + src_loc.x;
-	v_p_src_m1 = dev_m1 + src_loc.y * pitch/sizeof(float) + src_loc.y;
+	v_p_src_m1 = dev_m1 + src_loc.y * pitch/sizeof(float) + src_loc.x;
 	v_p_src_m2 = dev_m2 + src_loc.y * pitch/sizeof(float) + src_loc.x;
-	v_p_src_m3 = dev_m3 + src_loc.y * pitch/sizeof(float) + src_loc.y;
-
-	
+	v_p_src_m3 = dev_m3 + src_loc.y * pitch/sizeof(float) + src_loc.x;
+		
 	cudaStreamCreate(&v_stream1);
 	cudaStreamCreate(&v_stream2);
 	cudaStreamCreate(&v_stream3);
@@ -1047,6 +1236,8 @@ void cPFcaller_display(unsigned int num_iterations, float * &m_ptr)
 dim3 colorgrid(MATRIX_DIM,MATRIX_DIM,1);
 dim3 colorthreads(512/MATRIX_DIM,512/MATRIX_DIM,1);
 
+
+
 void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks)
 {
 	static int t = 0;
@@ -1054,6 +1245,7 @@ void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks)
 	checkCudaErrors(cudaEventCreate(&start));
 	checkCudaErrors(cudaEventCreate(&stop));
 	checkCudaErrors(cudaEventRecord(start, 0));
+	float source = 0.0f;
 	for (int i = 0; i < SAMPLING; i++)
 	{
 		PF_texture_slideright<<<v_grids, v_threads, 0, v_stream1>>>(dev_nm0, v_pitch);
@@ -1065,30 +1257,40 @@ void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks)
 
 		cudaDeviceSynchronize();
 
-		PF_copy_withWall<<<v_grids,v_threads>>>(dev_m0, dev_m1, dev_m2, dev_m3, dev_wall, v_matdim, v_pitch);
+		PF_copy_withWall<<<v_grids,v_threads>>>(dev_m0, dev_m1, dev_m2, dev_m3, dev_wall, v_matdim, v_pitch, dev_src, source);
+		add_and_average_signal<<<v_grids, v_threads>>>(v_pitch, i, dev_avg_m);
+			//(size_t pitch, int iter, float * avg_m)
 		cudaDeviceSynchronize();
 
-		float source = SRC_MAG * sin(2 * PI * 1 * (float)(ticks) / SAMPLING);
+		//float source = SRC_MAG * sin(2 * PI * 1 * (float)(i+t) / SAMPLING);
 		//float source = 1.0;
-		cudaMemcpy(v_p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice);
-		cudaMemcpy(v_p_src_m1, &source, sizeof(float), cudaMemcpyHostToDevice);
-		cudaMemcpy(v_p_src_m2, &source, sizeof(float), cudaMemcpyHostToDevice);
-		cudaMemcpy(v_p_src_m3, &source, sizeof(float), cudaMemcpyHostToDevice);
-		cudaDeviceSynchronize();
+		source = SRC_MAG * sin(PI * (i+t) * DELTA_LENGTH * SRC_FREQ/CT);
+		//float zero= 0;
+		//cudaMemcpy(v_p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice);
+		//cudaMemcpy(v_p_src_m1, &source, sizeof(float), cudaMemcpyHostToDevice);
+		//cudaMemcpy(v_p_src_m2, &source, sizeof(float), cudaMemcpyHostToDevice);
+		////cudaMemcpy(v_p_src_m2++, &source, sizeof(float), cudaMemcpyHostToDevice);
+		////cudaMemcpy(v_p_src_m2++, &source, sizeof(float), cudaMemcpyHostToDevice);
+		////cudaMemcpy(v_p_src_m2++, &source, sizeof(float), cudaMemcpyHostToDevice);
+		//cudaMemcpy(v_p_src_m3, &source, sizeof(float), cudaMemcpyHostToDevice);
+		//cudaDeviceSynchronize();
 	}
 	checkCudaErrors(cudaEventRecord(stop, 0));
 	cudaEventSynchronize(stop);
+	//v_p_src_m2 = dev_m2 + src_loc.y * v_pitch/sizeof(float) + src_loc.x;
 	float elapsed;
 	cudaEventElapsedTime(&elapsed, start, stop);
-	printf("Time for frame: %3.1f ms \n", elapsed);
-	t += SAMPLING-1;
+	//printf("Time for frame: %3.1f ms \n", elapsed);
+	t += SAMPLING;
+	//printf("source at %d is %f\n", (t), source);
 	if (MATRIX_DIM<512)
 	{
 		float_to_color_dBm_pixelate<<<colorgrid, colorthreads>>>(dispPixels, v_pitch, ticks);
 	}
 	else
 	{
-		float_to_color_dBm<<<v_grids,v_threads>>>(dispPixels, v_pitch);
+		//float_to_color_dBm<<<v_grids,v_threads>>>(dispPixels, v_pitch);
+		float_to_color_power_dBm<<<v_grids, v_threads>>>(dispPixels, v_pitch, dev_wall);
 	}
 }
 
@@ -1304,6 +1506,8 @@ void cPFinit(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[])
 
 	host_Wall = (byte *)malloc(sizeof(byte)*MATRIX_DIM*MATRIX_DIM); 
 	memset(host_Wall, 0, MATRIX_DIM*MATRIX_DIM*sizeof(byte));
+	host_src = (byte*) malloc(sizeof(byte)*MATRIX_DIM*MATRIX_DIM);
+	memset(host_src, 0, MATRIX_DIM*MATRIX_DIM*sizeof(byte));
 
 	for (int r = 0; r < image.rows ; r++)
 	{
@@ -1335,8 +1539,8 @@ void cPFinit(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[])
 	}
 
 	// copy source loc:
-	src_loc.x = in_sourceLoc[0];
-	src_loc.y = in_sourceLoc[1];
+	//src_loc.x = in_sourceLoc[0];
+	//src_loc.y = in_sourceLoc[1];
 }
 
 void cPFaddWallLocation(int x, int y, bool val)

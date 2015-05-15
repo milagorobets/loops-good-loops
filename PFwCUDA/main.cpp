@@ -25,7 +25,7 @@
 //#include <cuda_runtime_api.h>
 
 int position_sourceX = 64;
-int position_sourceY = 64;
+int position_sourceY = 128;
 
 float frequency_source = 1;
 
@@ -49,8 +49,15 @@ float matrixWall[4][4] = {{1.0,-1.0,1.0,1.0},
 int main(void)
 {
 	// Display the name of the class we are testing
-	printf("This project uses CUDA. April 28, 2015. \n");
+	printf("This project uses CUDA. May 12, 2015. \n");
 	printf("Testing: " STRING(TEST_CLASS) ": \n");
+
+	printf("Delta length = %f, Source frequency = %f \n", (float)(DELTA_LENGTH), (float)(SRC_FREQ));
+
+	if (SRC_FREQ > REC_MAX_FREQ)
+	{
+		printf("Error! Source frequency too high, results will not be accurate \n");
+	}
 
 	matrixFlow_types MATRIX_FLOW_TYPE = BASIC;
 	init_MatrixFlowType(&MATRIX_FLOW_TYPE, matrixFlow);

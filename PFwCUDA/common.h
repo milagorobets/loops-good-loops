@@ -4,10 +4,24 @@
 //---- NETWORK PARAMETERS:
 #define NUM_WALL_BLOCKS 5	// Number of wall blocks (used in the RNG version)
 #define MATRIX_DIM 512// Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
-#define SRC_MAG 3.126
+#define SRC_MAG 1 //3.126
 #define REDRAW_LOOP 100
-#define SAMPLING 100
-#define SAMPLES_TO_AVERAGE SAMPLING
+
+#define LIGHT_SPEED		300000000 // C
+//#define CT				(LIGHT_SPEED/1.414214) // C/sqrt(2)
+#define CT				(LIGHT_SPEED/2) // C/sqrt(2)
+#define CUTOFF_FREQ		(CT/DELTA_LENGTH/4)
+#define REC_MAX_FREQ	(CT/DELTA_LENGTH/10)
+#define DELTA_LENGTH	1
+#define SRC_FREQ		REC_MAX_FREQ
+
+#define SAMPLES_TO_AVERAGE (5*CT/REC_MAX_FREQ) //200
+#define SAMPLING  (5*CT/REC_MAX_FREQ) //20
+
+
+//#if (SRC_FREQ>REC_MAX_FREQ)
+//#warning("source frequency too high!")
+//#endif
 
 //---- SIMULATION PARAMETERS:
 #define NUM_CPU_R 1 // Number of iterations
