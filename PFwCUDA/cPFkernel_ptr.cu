@@ -93,6 +93,39 @@ void addSrc(int x, int y)
 
 #define DEL_MIN -10
 #define DEL_MAX 10
+#define WALL_R 2
+
+void addWall(int x, int y)
+{
+	int ry = (MATRIX_DIM - 1 - y);
+	for (int iy = -WALL_R; iy < WALL_R; iy++)
+	{
+		for (int ix = -WALL_R; ix < WALL_R; ix++)
+		{
+			if (((x + ix)>0) && ((ry + iy) > 0) && ((x + ix)<MATRIX_DIM) && ((y + iy)<MATRIX_DIM))
+			{
+				host_Wall[x + ix + (ry + iy) * MATRIX_DIM] = 1;
+			}
+		}
+	}
+	checkCudaErrors(cudaMemcpy(dev_wall, host_Wall, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+}
+
+void removeWall(int x, int y)
+{
+	int ry = (MATRIX_DIM - 1 - y);
+	for (int iy = -WALL_R*2; iy < WALL_R*2; iy++)
+	{
+		for (int ix = -WALL_R*2; ix < WALL_R*2; ix++)
+		{
+			if (((x + ix)>0) && ((ry + iy) > 0) && ((x + ix)<MATRIX_DIM) && ((y + iy)<MATRIX_DIM))
+			{
+				host_Wall[x + ix + (ry + iy) * MATRIX_DIM] = 0;
+			}
+		}
+	}
+	checkCudaErrors(cudaMemcpy(dev_wall, host_Wall, MATRIX_DIM*MATRIX_DIM*sizeof(byte), cudaMemcpyHostToDevice));
+}
 
 void removeSrc(int x, int y)
 {
@@ -230,19 +263,19 @@ __global__ void PF_copy_withWall(float*m0, float*m1, float*m2, float*m3, byte * 
 		// write values
 		if (wall[x + y * MATRIX_DIM] == 1)
 		{
-			m0[loc] = 0.1f*t0;
-			m1[loc] = 0.1f*t1;
-			m2[loc] = 0.1f*t2;
-			m3[loc] = 0.1f*t3;
+			m0[loc] = WALL_DEC*t0;
+			m1[loc] = WALL_DEC*t1;
+			m2[loc] = WALL_DEC*t2;
+			m3[loc] = WALL_DEC*t3;
 			//printf("wall!\n");
 		}
 		else if (src[x + y * MATRIX_DIM] == 1)
 		{
 			//printf("source at %d, %d", x, y);
-			m0[loc] = source_val;
-			m1[loc] = source_val;
-			m2[loc] = source_val;
-			m3[loc] = source_val;
+			m0[loc] = source_val + t0;
+			m1[loc] = source_val + t1;
+			m2[loc] = source_val + t2;
+			m3[loc] = source_val + t3;
 		}
 		else
 		{
@@ -295,6 +328,53 @@ __global__ void PF_padded_texture_copy(float*m0, float*m1, float*m2, float*m3, d
 __constant__ float cW[16];
 #define STR 0.0
 #define BND 0.5
+#define INC_EAST tex_m1
+#define INC_WEST tex_m0
+#define INC_NORTH tex_m2
+#define INC_SOUTH tex_m3
+
+__global__ void PF_roundscatter(float *nm0, float *nm1, float *nm2, float *nm3, size_t pitch)
+{
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	float xt = x + 0.5f;
+	float yt = y + 0.5f;
+
+	//ScatteredNorth[x, y-1] = 0.5m * (IEast - INorth + IWest + ISouth);
+	float sn = 0.5 * (	tex2D(INC_EAST, xt, yt - 1) -
+						tex2D(INC_NORTH, xt, yt - 1) +
+						tex2D(INC_WEST, xt,  yt - 1) +
+						tex2D(INC_SOUTH, xt, yt - 1));
+
+	//ScatteredEast[x-1, y] = 0.5m * (-IEast + INorth + IWest + ISouth);
+	float se = 0.5 * (0-tex2D(INC_EAST, xt - 1, yt) +
+						tex2D(INC_NORTH, xt - 1, yt) +
+						tex2D(INC_WEST, xt - 1, yt) +
+						tex2D(INC_SOUTH, xt - 1, yt));
+
+	//ScatteredWest[x+1, y] = 0.5m * (IEast + INorth - IWest + ISouth);
+	float sw = 0.5 * (	tex2D(INC_EAST, xt + 1, yt) +
+						tex2D(INC_NORTH, xt + 1, yt) -
+						tex2D(INC_WEST, xt + 1, yt) + 
+						tex2D(INC_SOUTH, xt + 1, yt));
+	
+	//ScatteredSouth[x, y+1] = 0.5m * (IEast + INorth + IWest - ISouth);
+	float ss = 0.5 * (	tex2D(INC_EAST, xt, yt + 1) +
+						tex2D(INC_NORTH, xt, yt + 1) +
+						tex2D(INC_WEST, xt, yt + 1) -
+						tex2D(INC_SOUTH, xt, yt + 1));
+
+	//IncomingEast[x, y] = ScatteredWest[x + 1, y];
+	nm1[x + y * pitch/sizeof(float)] = sw;
+	//IncomingNorth[x, y] = ScatteredSouth[x, y + 1];
+	nm2[x + y * pitch/sizeof(float)] = ss;
+	//IncomingWest[x, y] = ScatteredEast[x - 1, y];
+	nm0[x + y * pitch/sizeof(float)] = se;
+	//IncomingSouth[x, y] = ScatteredNorth[x, y - 1];*/
+	nm3[x + y * pitch/sizeof(float)] = sn;
+
+}
+
 __global__ void PF_texture_slideright(float *nm0, size_t pitch)
 {
 	int y = threadIdx.y + blockIdx.y * blockDim.y;
@@ -306,16 +386,17 @@ __global__ void PF_texture_slideright(float *nm0, size_t pitch)
 										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f)*cW[7];
 	//printf("nm0[%d] = %f \n", x + y * pitch/sizeof(float), nm0[x + y * pitch/sizeof(float)]);
 #else
-	nm0[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 0.5f) *(-STR) +
-										tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
-										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
-										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
-										(0 +
-										tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 1.5f) -
-										tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 1.5f) -
-										tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) - 0.5f) +
-										tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) - 0.5f)										
-										) * BND;
+
+	//nm0[x + y * pitch/sizeof(float)] =	tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 0.5f) *(-STR) +
+	//									tex2D(tex_m1, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+	//									tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+	//									tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) + 0.5f) *(STR) +
+	//									(0 +
+	//									tex2D(tex_m2, (float)(x) - 0.5f, (float)(y) + 1.5f) -
+	//									tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) + 1.5f) -
+	//									tex2D(tex_m0, (float)(x) - 0.5f, (float)(y) - 0.5f) +
+	//									tex2D(tex_m3, (float)(x) - 0.5f, (float)(y) - 0.5f)										
+	//									) * BND;
 #endif
 	//printf("x %d, y %d \n", x, y);
 }
@@ -592,19 +673,19 @@ __global__ void float_to_color_power_dBm( uchar4 *optr,
 	// Convert l to dBm:
 	l = 10 * log10f(abs(l)); // abs == 0 -l when negative, faster?
 
-	if (l < -110)
+	if (l < -100)
 	{
 		optr[offset].x = 255; optr[offset].y = 0; optr[offset].z = 0;
 	}
-	else if (l < -100)
+	else if (l < -90)
 	{
 		optr[offset].x = 0; optr[offset].y = 9; optr[offset].z = 255;
 	}
-	else if (l < -90)
+	else if (l < -80)
 	{
 		optr[offset].x = 255; optr[offset].y = 154; optr[offset].z = 0;
 	}
-	else if (l < -80)
+	else if (l < -70)
 	{
 		optr[offset].x = 255; optr[offset].y = 247; optr[offset].z = 0;
 	}
@@ -728,11 +809,12 @@ __global__ void add_and_average_signal(size_t pitch, int iter, float * avg_m)
 	float total=((tex2D(tex_m0, (x)+0.5f, (y)+0.5f))+
 				(tex2D(tex_m1, (x)+0.5f, (y)+0.5f))+
 				(tex2D(tex_m2, (x)+0.5f, (y)+0.5f))+
-				(tex2D(tex_m3, (x)+0.5f, (y)+0.5f)))*0.125;
+				(tex2D(tex_m3, (x)+0.5f, (y)+0.5f)))*0.5;
 
 	total = total*total; // square for power
 	
-	if (iter % SAMPLES_TO_AVERAGE)
+	//if (iter % SAMPLES_TO_AVERAGE)
+	if (1)
 	{
 		float oldavg = tex2D(tex_avg_m, (x)+0.5, (y)+0.5);
 		total = oldavg*(SAMPLES_TO_AVERAGE-1) + total;
@@ -1248,15 +1330,17 @@ void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks)
 	float source = 0.0f;
 	for (int i = 0; i < SAMPLING; i++)
 	{
-		PF_texture_slideright<<<v_grids, v_threads, 0, v_stream1>>>(dev_nm0, v_pitch);
+		//__global__ void PF_roundscatter(float *nm0, float *nm1, float *nm2, float *nm3, size_t pitch)
+		PF_roundscatter<<<v_grids, v_threads>>>(dev_nm0, dev_nm1, dev_nm2, dev_nm3, v_pitch);
+		/*PF_texture_slideright<<<v_grids, v_threads, 0, v_stream1>>>(dev_nm0, v_pitch);
 		PF_texture_slideleft<<<v_grids, v_threads, 0, v_stream2>>>(dev_nm1, v_pitch);
 		PF_texture_slidedown<<<v_grids, v_threads, 0, v_stream3>>>(dev_nm2, v_pitch);
-		PF_texture_slideup<<<v_grids, v_threads, 0, v_stream4>>>(dev_nm3, v_pitch);
+		PF_texture_slideup<<<v_grids, v_threads, 0, v_stream4>>>(dev_nm3, v_pitch);*/
 
 		//PF_padded_texture_flow<<<v_grids,v_threads,v_shared_mem_size>>>(src_loc, source, dev_wall, dev_nm0, dev_nm1, dev_nm2, dev_nm3, v_matdim, dev_WWall, dev_W, v_pitch);
 
 		cudaDeviceSynchronize();
-
+		source = SRC_MAG * sin(PI * (i+t) * DELTA_LENGTH * SRC_FREQ/CT);
 		PF_copy_withWall<<<v_grids,v_threads>>>(dev_m0, dev_m1, dev_m2, dev_m3, dev_wall, v_matdim, v_pitch, dev_src, source);
 		add_and_average_signal<<<v_grids, v_threads>>>(v_pitch, i, dev_avg_m);
 			//(size_t pitch, int iter, float * avg_m)
@@ -1264,7 +1348,7 @@ void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks)
 
 		//float source = SRC_MAG * sin(2 * PI * 1 * (float)(i+t) / SAMPLING);
 		//float source = 1.0;
-		source = SRC_MAG * sin(PI * (i+t) * DELTA_LENGTH * SRC_FREQ/CT);
+		/*source = SRC_MAG * sin(PI * (i+t) * DELTA_LENGTH * SRC_FREQ/CT);*/
 		//float zero= 0;
 		//cudaMemcpy(v_p_src_m0, &source, sizeof(float), cudaMemcpyHostToDevice);
 		//cudaMemcpy(v_p_src_m1, &source, sizeof(float), cudaMemcpyHostToDevice);
