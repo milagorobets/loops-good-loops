@@ -204,6 +204,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="gpuAlgoPixelFlow.h" />
     <ClInclude Include="gpuPF_ptr.h" />
     <ClInclude Include="init.h" />
+    <ClInclude Include="keyboard_functions.h" />
     <ClInclude Include="ref_cpuAlgoPixelFlow.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

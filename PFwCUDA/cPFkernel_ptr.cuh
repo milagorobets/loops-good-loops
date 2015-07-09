@@ -17,3 +17,8 @@ void cPFdelete(void);
 void cPFinit(float matrixFlow[][4], float matrixWall[][4], float in_sourceLoc[]);
 void cPFcaller_generateFrame(uchar4 * dispPixels, void*, int ticks);
 void cPFcaller_display(unsigned int num_iterations, float * &m_ptr);
+
+void cPFload(void);
+void cPFsave(void);
+void cPFnumAddSrc(void);
+void cPFsaveData(void);

@@ -3,23 +3,36 @@
 
 //---- NETWORK PARAMETERS:
 #define NUM_WALL_BLOCKS 5	// Number of wall blocks (used in the RNG version)
-#define MATRIX_DIM 1024 // Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
-#define SRC_MAG 0.01 //3.126
+#define MATRIX_DIM 512 // Grid dimension (NUMEL is MATRIX_DIM*MATRIX_DIM)
+#define SRC_MAG 0.1 //0.4 //3.126
 #define REDRAW_LOOP 100
 
 #define LIGHT_SPEED		300000000 // C
 //#define CT				(LIGHT_SPEED/1.414214) // C/sqrt(2)
-#define CT				(LIGHT_SPEED/2) // C/sqrt(2)
+// LIGHT:
+//#define CT				(LIGHT_SPEED/2) // C/sqrt(2)
+//#define CUTOFF_FREQ		(CT/DELTA_LENGTH/4)
+//#define REC_MAX_FREQ	(CT/DELTA_LENGTH/10)
+//#define DELTA_LENGTH	1
+//#define SRC_FREQ		15000000 //REC_MAX_FREQ //1500000000
+
+// SOUND:
+#define SOUND_SPEED		340
+#define CT				(SOUND_SPEED/2) // C/sqrt(2)
 #define CUTOFF_FREQ		(CT/DELTA_LENGTH/4)
 #define REC_MAX_FREQ	(CT/DELTA_LENGTH/10)
-#define DELTA_LENGTH	0.01
-#define SRC_FREQ		1500000000
-#define WALL_DEC_PCM	0.85 // per 10cm thickness
+#define DELTA_LENGTH	1.0// 0.3 works for 17Hz //0.075
+#define SRC_FREQ		1 //1500000000
+
+#define RSC -0.99
+
+#define WALL_DEC_PCM	0.1 // per 10cm thickness
 #define WALL_DEC		WALL_DEC_PCM
 
-#define SAMPLES_TO_AVERAGE (5 * 20) //(5*CT/SRC_FREQ) //(5*CT/REC_MAX_FREQ) //200
-#define SAMPLING 20 //(CT/SRC_FREQ) //(1*CT/REC_MAX_FREQ) //20
+#define SAMPLES_TO_AVERAGE 170//(5 * 20) //(5*CT/SRC_FREQ) //(5*CT/REC_MAX_FREQ) //200
+#define SAMPLING 170 //(CT/SRC_FREQ) //(1*CT/REC_MAX_FREQ) //20
 
+#define DISPLAY_FRAME_TIMING 0
 
 //#if (SRC_FREQ>REC_MAX_FREQ)
 //#warning("source frequency too high!")
