@@ -28,7 +28,7 @@ int main(array<System::String ^> ^args)
 	mainform -> render = renderframe;
 	renderframe -> f = mainform;
 
-	mainform -> render -> CRender_init(500,500);
+	//mainform -> render -> CRender_init(500,500);
 	
 	Application::Run(mainform);
 

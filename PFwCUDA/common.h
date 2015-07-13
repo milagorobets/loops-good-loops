@@ -29,8 +29,8 @@
 #define WALL_DEC_PCM	0.1 // per 10cm thickness
 #define WALL_DEC		WALL_DEC_PCM
 
-#define SAMPLES_TO_AVERAGE 170//(5 * 20) //(5*CT/SRC_FREQ) //(5*CT/REC_MAX_FREQ) //200
-#define SAMPLING 170 //(CT/SRC_FREQ) //(1*CT/REC_MAX_FREQ) //20
+#define SAMPLES_TO_AVERAGE 1//(5 * 20) //(5*CT/SRC_FREQ) //(5*CT/REC_MAX_FREQ) //200
+#define SAMPLING 1 //(CT/SRC_FREQ) //(1*CT/REC_MAX_FREQ) //20
 
 #define DISPLAY_FRAME_TIMING 0
 

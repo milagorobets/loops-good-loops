@@ -1,8 +1,8 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
+//#pragma comment(lib, "opengl32.lib")
+//#pragma comment(lib, "glu32.lib")
 
 #pragma once
 
@@ -31,6 +31,7 @@ namespace OpenGLRenderer
 											GLsizei iHeight);
 
 		int DrawFrame(void);
+		void blankscreen(void);
 		GLvoid KILLGLWindow(GLvoid);
 
 	private:

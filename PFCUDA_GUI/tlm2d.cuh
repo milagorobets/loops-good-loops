@@ -5,5 +5,7 @@
 #include "device_launch_parameters.h"
 
 cudaError_t addWithCuda(int *c, const int *a, const int *b, unsigned int size);
+void animate(uchar4* dispPtr);
+void prepAnimation(int width, int height);
 
 #endif

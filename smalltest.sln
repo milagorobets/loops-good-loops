@@ -29,6 +29,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PFCUDA_GUI", "PFCUDA_GUI\PF
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reference", "reference\reference.vcxproj", "{30EBF6EF-B180-4BFE-A69F-124F7900B716}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cuda_opengl_winforms", "cuda_opengl_winforms\cuda_opengl_winforms.vcxproj", "{CB53BA6F-DA57-4158-A291-49B965FFB9A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "postProcessGL", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\3_Imaging\postProcessGL\postProcessGL_vs2010.vcxproj", "{6B08E52E-C57D-4274-8079-42A3520AB012}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleCUDA2GL", "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.0\3_Imaging\simpleCUDA2GL\simpleCUDA2GL_vs2010.vcxproj", "{16917F49-9E77-46C9-A056-6ABB028EDD3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -191,6 +197,36 @@ Global
 		{30EBF6EF-B180-4BFE-A69F-124F7900B716}.Release|Win32.Build.0 = Release|Win32
 		{30EBF6EF-B180-4BFE-A69F-124F7900B716}.Release|x64.ActiveCfg = Release|x64
 		{30EBF6EF-B180-4BFE-A69F-124F7900B716}.Release|x64.Build.0 = Release|x64
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Debug|Win32.Build.0 = Debug|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Debug|x64.ActiveCfg = Debug|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Release|Win32.ActiveCfg = Release|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Release|Win32.Build.0 = Release|Win32
+		{CB53BA6F-DA57-4158-A291-49B965FFB9A7}.Release|x64.ActiveCfg = Release|Win32
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Debug|Win32.ActiveCfg = Debug|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Debug|x64.ActiveCfg = Debug|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Debug|x64.Build.0 = Debug|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Release|Mixed Platforms.Build.0 = Release|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Release|Win32.ActiveCfg = Release|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Release|x64.ActiveCfg = Release|x64
+		{6B08E52E-C57D-4274-8079-42A3520AB012}.Release|x64.Build.0 = Release|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Debug|Win32.ActiveCfg = Debug|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Debug|x64.ActiveCfg = Debug|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Debug|x64.Build.0 = Debug|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Release|Mixed Platforms.Build.0 = Release|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Release|Win32.ActiveCfg = Release|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Release|x64.ActiveCfg = Release|x64
+		{16917F49-9E77-46C9-A056-6ABB028EDD3F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

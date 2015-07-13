@@ -44,13 +44,16 @@ namespace PFCUDA_GUI {
 	private: System::Windows::Forms::Button^  btnTest;
 	private: System::Windows::Forms::Label^  lblTest;
 	private: System::Windows::Forms::TextBox^  txtMessages;
+	private: System::Windows::Forms::Timer^  tInitialization;
+
+	private: System::ComponentModel::IContainer^  components;
 	protected: 
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -59,15 +62,17 @@ namespace PFCUDA_GUI {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			this->pViewer = (gcnew System::Windows::Forms::Panel());
 			this->btnTest = (gcnew System::Windows::Forms::Button());
 			this->lblTest = (gcnew System::Windows::Forms::Label());
 			this->txtMessages = (gcnew System::Windows::Forms::TextBox());
+			this->tInitialization = (gcnew System::Windows::Forms::Timer(this->components));
 			this->SuspendLayout();
 			// 
 			// pViewer
 			// 
-			this->pViewer->BackColor = System::Drawing::SystemColors::ActiveCaption;
+			this->pViewer->BackColor = System::Drawing::SystemColors::Control;
 			this->pViewer->Location = System::Drawing::Point(13, 13);
 			this->pViewer->Name = L"pViewer";
 			this->pViewer->Size = System::Drawing::Size(737, 684);
@@ -99,6 +104,12 @@ namespace PFCUDA_GUI {
 			this->txtMessages->Size = System::Drawing::Size(100, 20);
 			this->txtMessages->TabIndex = 3;
 			// 
+			// tInitialization
+			// 
+			this->tInitialization->Enabled = true;
+			this->tInitialization->Interval = 10;
+			this->tInitialization->Tick += gcnew System::EventHandler(this, &Form1::tInitialization_tick);
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -118,17 +129,24 @@ namespace PFCUDA_GUI {
 #pragma endregion
 	private: System::Void btnTest_Click(System::Object^  sender, System::EventArgs^  e) {
 				 //addWithCuda(int *c, const int *a, const int *b, unsigned int size);
-				 this-> Focus();
+				/* this-> Focus();
 				 int c[5] = {};
 				 int a[5] = {0, 1, 2, 3, 4};
 				 int b[5] = {10, 11, 12, 13, 14};
 				 addWithCuda(c, a, b, 5);
 				 this->lblTest->Text = Convert::ToString(c[0]) + " " + Convert::ToString(c[1]) + " " +
 										Convert::ToString(c[2]) + " " + Convert::ToString(c[3]) + " " +
-										Convert::ToString(c[4]);
+										Convert::ToString(c[4]);*/
+				 //render->blankscreen();
 				 //this->txtMessages->AppendText("hello%d", a[1]);
 				 //printf("hello");
+				 //render->CRender_init(500,500);
+				 render->CRender_init(500,500);
 			 }
-	};
+	private: System::Void tInitialization_tick(System::Object^  sender, System::EventArgs^  e) {
+				 /*render->CRender_init(500,500);*/
+				 this->tInitialization->Enabled = false;
+			 }
+};
 }
 
